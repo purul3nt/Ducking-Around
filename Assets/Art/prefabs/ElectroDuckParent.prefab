@@ -60,6 +60,7 @@ MonoBehaviour:
   hitFlashDuration: 0.1
   chainCount: 3
   chainDamage: 1
+  lightningBoltFxPrefab: {fileID: 1369591033440970545, guid: 017136bad9d75b049a00131638d6437c, type: 3}
 --- !u!65 &3945131901975690575
 BoxCollider:
   m_ObjectHideFlags: 0
