@@ -17,12 +17,12 @@ namespace DuckingAround
         public TMP_Text breakerRadiusText;
         public TMP_Text ducksPerDeathText;
 
-        [Header("Upgrade Cost Labels")]
-        public TMP_Text breakerCostText;
-        public TMP_Text ducksCostText;
-
         [Header("Panels")]
         public GameObject upgradesPanel;
+
+        [Header("Upgrade Grid")]
+        [Tooltip("All upgrade slots in the grid, each configured with its upgrade code.")]
+        public UpgradeButton[] upgradeButtons;
 
         void Awake()
         {
@@ -45,8 +45,17 @@ namespace DuckingAround
             if (breakerRadiusText != null) breakerRadiusText.text = gm.breakerRadius.ToString("0.00");
             if (ducksPerDeathText != null) ducksPerDeathText.text = gm.ducksPerDeath.ToString();
 
-            if (breakerCostText != null) breakerCostText.text = gm.GetBreakerUpgradeCost().ToString();
-            if (ducksCostText != null) ducksCostText.text = gm.GetDucksUpgradeCost().ToString();
+            // Refresh upgrade grid state (costs, lock, purchased, interactable).
+            if (upgradeButtons != null)
+            {
+                foreach (var ub in upgradeButtons)
+                {
+                    if (ub != null)
+                    {
+                        ub.Refresh();
+                    }
+                }
+            }
         }
 
         public void ShowUpgrades(bool show)
@@ -58,17 +67,11 @@ namespace DuckingAround
         }
 
         // --- Button hooks ---------------------------------------------------
-
-        public void OnUpgradeBreakerClicked()
+        // Generic upgrade button that takes an upgrade code (e.g. \"U1\", \"U2\"...).
+        public void OnUpgradeClicked(string upgradeCode)
         {
             if (GameManager.Instance == null) return;
-            GameManager.Instance.UpgradeBreaker();
-        }
-
-        public void OnUpgradeDucksClicked()
-        {
-            if (GameManager.Instance == null) return;
-            GameManager.Instance.UpgradeDucks();
+            GameManager.Instance.PurchaseUpgrade(upgradeCode);
         }
 
         public void OnNextSessionClicked()

@@ -127,7 +127,7 @@ namespace DuckingAround
             }
         }
 
-        void Die()
+        protected virtual void Die()
         {
             if (dying) return;
             dying = true;

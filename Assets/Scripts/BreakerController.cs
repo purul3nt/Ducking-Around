@@ -63,7 +63,9 @@ namespace DuckingAround
 
             UpdatePositionFromMouse();
 
-            damageTimer -= Time.deltaTime;
+            // Faster breaker speeds multiply how quickly the timer counts down.
+            float speed = GameManager.Instance != null ? GameManager.Instance.breakerSpeedMultiplier : 1f;
+            damageTimer -= Time.deltaTime * speed;
             if (damageTimer <= 0f)
             {
                 damageTimer = damageTickInterval;
@@ -96,8 +98,10 @@ namespace DuckingAround
 
         void ApplyDamage()
         {
-            // Slightly pad the logical radius so the visual breaker ring
-            // feels generous when overlapping ducks.
+            if (GameManager.Instance == null) return;
+
+            // Slightly pad the logical radius so the visual breaker ring feels
+            // generous when overlapping ducks.
             float radius = GameManager.Instance.breakerRadius * 1.1f;
 
             // Copy the list so it is safe if ducks are added/removed
@@ -114,7 +118,8 @@ namespace DuckingAround
                 float dist = Vector3.Distance(breakerPos, duckPos);
                 if (dist <= radius)
                 {
-                    duck.TakeDamage(1);
+                    int damage = GameManager.Instance.GetBreakerDamage();
+                    duck.TakeDamage(damage);
                 }
             }
         }
