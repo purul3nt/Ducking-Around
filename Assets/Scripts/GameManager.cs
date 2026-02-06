@@ -39,6 +39,10 @@ namespace DuckingAround
         public Duck fireDuckPrefab;
         [Tooltip("Chance (0–1) that a spawned duck will be a Fire Duck instead of a normal duck.")]
         public float fireDuckChance = 0.15f;
+        [Tooltip("Optional prefab for Electro Duck (chain lightning on death).")]
+        public Duck electroDuckPrefab;
+        [Tooltip("Chance (0–1) that a spawned duck will be an Electro Duck instead of a normal duck.")]
+        public float electroDuckChance = 0.1f;
         [Tooltip("Initial number of ducks to spawn at the start of a session.")]
         public int initialDuckCount = 4;
         [Tooltip("Radius of the hot tub in world units, used for random spawn positions.")]
@@ -195,9 +199,25 @@ namespace DuckingAround
             // Spawn facing a random horizontal direction so swimming follows rotation.
             Quaternion rot = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
-            // Decide which duck type to spawn (normal vs Fire Duck).
+            // Decide which duck type to spawn (normal vs Fire vs Electro).
             Duck prefabToUse = duckPrefab;
-            if (fireDuckPrefab != null && Random.value < fireDuckChance)
+            float roll = Random.value;
+            float fireThreshold = fireDuckChance;
+            float electroThreshold = fireDuckChance + electroDuckChance;
+
+            if (electroDuckPrefab != null && roll < electroThreshold)
+            {
+                // First slice goes to Electro, then Fire, depending on how you set the chances.
+                if (roll < electroDuckChance)
+                {
+                    prefabToUse = electroDuckPrefab;
+                }
+                else if (fireDuckPrefab != null)
+                {
+                    prefabToUse = fireDuckPrefab;
+                }
+            }
+            else if (fireDuckPrefab != null && roll < fireThreshold)
             {
                 prefabToUse = fireDuckPrefab;
             }

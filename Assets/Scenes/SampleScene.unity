@@ -2119,8 +2119,12 @@ MonoBehaviour:
   duckPrefab: {fileID: 8532917784641032695, guid: 42036acb92d13d54382a8887bdf03f05, type: 3}
   fireDuckPrefab: {fileID: 8369050820147957935, guid: 422ee07075d5b7246950eb2bb553b0a9, type: 3}
   fireDuckChance: 0.15
+  electroDuckPrefab: {fileID: 3497190540865605866, guid: 410a740c10cac89488bae33cbf343c7f, type: 3}
+  electroDuckChance: 0.15
   initialDuckCount: 4
   tubRadius: 5
+  crocodileCenterXZ: {x: 0.2, y: 0}
+  crocodileSpawnAvoidRadius: 1.2
   breakerRadius: 1.4
   breakerDamage: 1
   breakerSpeedMultiplier: 1
