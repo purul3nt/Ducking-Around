@@ -15,6 +15,9 @@ namespace DuckingAround
         [Tooltip("Explosion radius in world units on the water plane.")]
         public float explosionRadius = 1.5f;
 
+        [Tooltip("Optional particle system prefab to play when this duck explodes.")]
+        public ParticleSystem explosionFxPrefab;
+
         protected override void Die()
         {
             // Trigger explosion damage before running the normal death flow.
@@ -25,6 +28,15 @@ namespace DuckingAround
         void Explode()
         {
             if (GameManager.Instance == null) return;
+
+            // Visual effect.
+            if (explosionFxPrefab != null)
+            {
+                // Scale FX so its radius roughly matches the explosionRadius.
+                float scale = explosionRadius;
+                var fx = Instantiate(explosionFxPrefab, transform.position, Quaternion.identity);
+                fx.transform.localScale = new Vector3(scale, scale, scale);
+            }
 
             var ducksSnapshot = GameManager.Instance.Ducks.ToArray();
 

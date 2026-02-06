@@ -102,6 +102,7 @@ MonoBehaviour:
   hitFlashDuration: 0.1
   explosionDamage: 1
   explosionRadius: 1.5
+  explosionFxPrefab: {fileID: 3210955189120226240, guid: ba00508e0ddcedf4a9d0c61663154967, type: 3}
 --- !u!65 &-6370098834707085611
 BoxCollider:
   m_ObjectHideFlags: 0
