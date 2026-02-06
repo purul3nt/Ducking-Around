@@ -41,10 +41,16 @@ namespace DuckingAround
             return Color.magenta;
         }
 
+        bool hasExploded;
+
         protected override void Die()
         {
-            // Trigger explosion damage before running the normal death flow.
-            Explode();
+            // Ensure we only run explosion + spawn FX once, even if Die() is triggered multiple times (e.g. trigger firing every frame).
+            if (!hasExploded)
+            {
+                hasExploded = true;
+                Explode();
+            }
             base.Die();
         }
 
