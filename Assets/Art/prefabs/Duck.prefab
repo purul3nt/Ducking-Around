@@ -125,4 +125,10 @@ MonoBehaviour:
   hp: 0
   bobAmplitude: 0.05
   bobSpeed: 2
+  swimSpeed: 0.4
+  swimRadiusMultiplier: 0.8
+  turnSpeed: 2
+  crocodileCenterXZ: {x: 0.2, y: 0}
+  crocodileAvoidRadius: 15
   deathDuration: 0.7
+  hitFlashDuration: 0.1

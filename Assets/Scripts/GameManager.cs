@@ -43,6 +43,10 @@ namespace DuckingAround
         public int initialDuckCount = 4;
         [Tooltip("Radius of the hot tub in world units, used for random spawn positions.")]
         public float tubRadius = 5f;
+        [Tooltip("Center of the crocodile on the XZ plane; ducks will not spawn inside its radius.")]
+        public Vector2 crocodileCenterXZ = new Vector2(0.2f, 0f);
+        [Tooltip("Radius around the crocodile where ducks are not allowed to spawn.")]
+        public float crocodileSpawnAvoidRadius = 1.2f;
 
         [Header("Runtime stats (affected by upgrades)")]
         [Tooltip("Current breaker radius in world units on the water plane.")]
@@ -151,15 +155,42 @@ namespace DuckingAround
             // Respect maximum duck count.
             if (Ducks.Count >= maxDucks) return;
 
-            // Random point inside a circle in XZ plane.
-            float r = Mathf.Sqrt(Random.value) * (tubRadius * 0.8f);
-            float angle = Random.value * Mathf.PI * 2f;
+            // Random point inside a circle in XZ plane, avoiding the crocodile area.
+            Vector3 pos = Vector3.zero;
+            const int maxTries = 16;
+            int tries = 0;
+            Vector2 crocCenter = crocodileCenterXZ;
+            float avoidRadiusSqr = crocodileSpawnAvoidRadius * crocodileSpawnAvoidRadius;
 
-            Vector3 pos = new Vector3(
-                Mathf.Cos(angle) * r,
-                0.35f,
-                Mathf.Sin(angle) * r
-            );
+            do
+            {
+                float r = Mathf.Sqrt(Random.value) * (tubRadius * 0.8f);
+                float angle = Random.value * Mathf.PI * 2f;
+
+                float x = Mathf.Cos(angle) * r;
+                float z = Mathf.Sin(angle) * r;
+
+                Vector2 pXZ = new Vector2(x, z);
+                if ((pXZ - crocCenter).sqrMagnitude >= avoidRadiusSqr)
+                {
+                    pos = new Vector3(x, 0.35f, z);
+                    break;
+                }
+
+                tries++;
+            } while (tries < maxTries);
+
+            // If we somehow failed to find a spot after several tries, just use the last position.
+            if (pos == Vector3.zero)
+            {
+                float r = Mathf.Sqrt(Random.value) * (tubRadius * 0.8f);
+                float angle = Random.value * Mathf.PI * 2f;
+                pos = new Vector3(
+                    Mathf.Cos(angle) * r,
+                    0.35f,
+                    Mathf.Sin(angle) * r
+                );
+            }
 
             // Spawn facing a random horizontal direction so swimming follows rotation.
             Quaternion rot = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);

@@ -23,6 +23,11 @@ namespace DuckingAround
         public float swimRadiusMultiplier = 0.8f;
         [Tooltip("How quickly the duck turns when steering back toward the center.")]
         public float turnSpeed = 2f;
+        [Header("Crocodile avoidance")]
+        [Tooltip("Center of the crocodile on the XZ plane (ducks will swim around this).")]
+        public Vector2 crocodileCenterXZ = new Vector2(0.2f, 0f);
+        [Tooltip("Ducks steer away when within this distance of the crocodile center.")]
+        public float crocodileAvoidRadius = 1.2f;
 
         [Header("Death animation")]
         [Tooltip("Seconds for the duck to slide into the crocodile after death.")]
@@ -44,7 +49,7 @@ namespace DuckingAround
         {
             hp = maxHp;
             startPos = transform.position;
-            cachedRenderer = GetComponentInChildren<Renderer>();
+            cachedRenderer = GetFlashRenderer();
             if (cachedRenderer != null)
             {
                 baseColor = cachedRenderer.material.color;
@@ -103,6 +108,17 @@ namespace DuckingAround
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
                 }
 
+                // If we get too close to the crocodile, steer away so ducks swim around it.
+                Vector3 crocPosXZ = new Vector3(crocodileCenterXZ.x, 0f, crocodileCenterXZ.y);
+                Vector3 toCroc = crocPosXZ - new Vector3(pos.x, 0f, pos.z);
+                float distToCroc = toCroc.magnitude;
+                if (distToCroc < crocodileAvoidRadius && distToCroc > 0.001f)
+                {
+                    Vector3 awayFromCroc = -toCroc.normalized;
+                    Quaternion targetRot = Quaternion.LookRotation(awayFromCroc, Vector3.up);
+                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
+                }
+
                 // Gentle float motion on water surface (vertical bobbing).
                 float y = startPos.y + Mathf.Sin(Time.time * bobSpeed + startPos.x) * bobAmplitude;
                 pos.y = y;
@@ -145,12 +161,29 @@ namespace DuckingAround
             }
         }
 
+        /// <summary>
+        /// Override in subclasses (e.g. FireDuck) if the renderer is on a child instead of this object.
+        /// </summary>
+        protected virtual Renderer GetFlashRenderer()
+        {
+            return GetComponentInChildren<Renderer>();
+        }
+
         void TriggerHitFlash()
         {
             if (cachedRenderer == null) return;
 
             hitFlashTimer = hitFlashDuration;
-            cachedRenderer.material.color = Color.white;
+            Color flashColor = GetHitFlashColor();
+            cachedRenderer.material.color = flashColor;
+        }
+
+        /// <summary>
+        /// Override to customize hit flash color per duck type.
+        /// </summary>
+        protected virtual Color GetHitFlashColor()
+        {
+            return Color.white;
         }
 
         void UpdateHitFlash()

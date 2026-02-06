@@ -4,7 +4,7 @@ namespace DuckingAround
 {
     /// <summary>
     /// A special duck that explodes on death, damaging nearby ducks.
-    /// Inherits normal duck movement / behaviour.
+    /// Inherits normal duck movement / behaviour, including hit flash effects.
     /// </summary>
     public class FireDuck : Duck
     {
@@ -17,6 +17,29 @@ namespace DuckingAround
 
         [Tooltip("Optional particle system prefab to play when this duck explodes.")]
         public ParticleSystem explosionFxPrefab;
+
+        /// <summary>
+        /// FireDuck's mesh/renderer is on a child; use that for hit flash and death color restore.
+        /// </summary>
+        protected override Renderer GetFlashRenderer()
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var r = transform.GetChild(i).GetComponentInChildren<Renderer>();
+                if (r != null)
+                    return r;
+            }
+            return null;
+        }
+
+        /// <summary>
+        /// Use a bright pink hit flash color for FireDuck.
+        /// </summary>
+        protected override Color GetHitFlashColor()
+        {
+            // Bright pink (RGB 1, 0, 1).
+            return Color.magenta;
+        }
 
         protected override void Die()
         {
