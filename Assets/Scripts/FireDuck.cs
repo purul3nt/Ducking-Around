@@ -36,6 +36,7 @@ namespace DuckingAround
                 float scale = explosionRadius;
                 var fx = Instantiate(explosionFxPrefab, transform.position, Quaternion.identity);
                 fx.transform.localScale = new Vector3(scale, scale, scale);
+                Destroy(fx.gameObject, 1f);
             }
 
             var ducksSnapshot = GameManager.Instance.Ducks.ToArray();
