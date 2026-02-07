@@ -8,7 +8,7 @@ namespace DuckingAround
     /// This is a minimal, scene-agnostic manager intended to sit in a Unity scene
     /// alongside a BreakerController, UIManager, and a simple hot-tub environment.
     /// </summary>
-    public class GameManager : MonoBehaviour
+    public class GameManager : MonoBehaviour, IUpgradeStateProvider
     {
         public static GameManager Instance { get; private set; }
 
@@ -459,6 +459,69 @@ namespace DuckingAround
             }
 
             return true;
+        }
+
+        // --- Upgrade graph (dependency tree UI) -----------------------------
+
+        /// <summary>
+        /// Returns definitions for all upgrades (id, name, requiresIds) for UpgradeGraphView.
+        /// </summary>
+        public List<UpgradeDef> GetUpgradeDefsForGraph()
+        {
+            var list = new List<UpgradeDef>();
+            if (upgrades == null) return list;
+            foreach (var kv in upgrades)
+            {
+                var u = kv.Value;
+                var requiresIds = string.IsNullOrEmpty(u.dependencyCode)
+                    ? new List<string>()
+                    : new List<string> { u.dependencyCode };
+                list.Add(new UpgradeDef(kv.Key, GetUpgradeDisplayName(kv.Key), requiresIds));
+            }
+            return list;
+        }
+
+        UpgradeNodeState IUpgradeStateProvider.GetState(string upgradeId) => GetUpgradeState(upgradeId);
+
+        /// <summary>
+        /// State for graph node styling (Unlocked = purchased, Available = can buy, Locked = prereqs not met).
+        /// </summary>
+        public UpgradeNodeState GetUpgradeState(string code)
+        {
+            if (upgrades == null || !upgrades.TryGetValue(code, out _)) return UpgradeNodeState.Locked;
+            if (IsUpgradePurchased(code)) return UpgradeNodeState.Unlocked;
+            if (IsUpgradeAvailable(code)) return UpgradeNodeState.Available;
+            return UpgradeNodeState.Locked;
+        }
+
+        static string GetUpgradeDisplayName(string code)
+        {
+            switch (code)
+            {
+                case "U1": return "+Session Time";
+                case "U2": return "+Breaker Radius I";
+                case "U3": return "+Breaker Damage I";
+                case "U4": return "+Max Ducks I";
+                case "U5": return "+Breaker Radius II";
+                case "U6": return "+Breaker Damage II";
+                case "U7": return "+Max Ducks II";
+                case "U8": return "+Breaker Speed I";
+                case "U9": return "+Crit Chance I";
+                case "U10": return "+Duck Size I";
+                case "U11": return "+Crit Chance II";
+                case "U12": return "+Breaker Speed II";
+                case "U13": return "+Breaker Radius III";
+                case "U14": return "+Breaker Damage III";
+                case "U15": return "+Duck Size II";
+                case "U16": return "+Breaker Speed III";
+                case "U17": return "+Duck Mass I";
+                case "U18": return "+Breaker Damage IV";
+                case "U19": return "+Breaker Damage V";
+                case "U20": return "+Crit Chance III";
+                case "U21": return "+Crit Damage";
+                case "U22": return "+Duck Mass II";
+                default: return code;
+            }
         }
     }
 }

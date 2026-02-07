@@ -24,6 +24,10 @@ namespace DuckingAround
         [Tooltip("All upgrade slots in the grid, each configured with its upgrade code.")]
         public UpgradeButton[] upgradeButtons;
 
+        [Header("Upgrade Graph")]
+        [Tooltip("Optional dependency graph view; Refresh() is called when HUD updates (e.g. after purchase).")]
+        public UpgradeGraphView upgradeGraphView;
+
         void Awake()
         {
             if (Instance != null && Instance != this)
@@ -56,6 +60,9 @@ namespace DuckingAround
                     }
                 }
             }
+
+            if (upgradeGraphView != null)
+                upgradeGraphView.Refresh();
         }
 
         public void ShowUpgrades(bool show)
