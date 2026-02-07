@@ -24,6 +24,7 @@ namespace DuckingAround
         [Tooltip("Duration of the gold pulse animation in seconds.")]
         public float goldPulseDuration = 0.25f;
 
+
         int _lastGold = -1;
         Coroutine _goldPulseRoutine;
         Coroutine _timerPulseRoutine;

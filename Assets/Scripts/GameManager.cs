@@ -244,6 +244,9 @@ namespace DuckingAround
             Ducks.Add(d);
         }
 
+        /// <summary>Fired when a duck is sucked into the crocodile (after OnDuckKilled).</summary>
+        public static event System.Action DuckSuckedIn;
+
         public void OnDuckKilled(Duck duck)
         {
             if (duck != null)
@@ -265,6 +268,8 @@ namespace DuckingAround
             {
                 SpawnDuckAtPosition(deathPos);
             }
+
+            DuckSuckedIn?.Invoke();
         }
 
         // --- Breaker damage / crits ----------------------------------------
