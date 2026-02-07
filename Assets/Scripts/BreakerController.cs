@@ -127,6 +127,8 @@ namespace DuckingAround
                     hitAny = true;
                     int damage = GameManager.Instance.GetBreakerDamage();
                     duck.TakeDamage(damage);
+                    if (FloatingDamageNumbersManager.Instance != null)
+                        FloatingDamageNumbersManager.Instance.ShowDamage(damage, duck.transform.position);
                 }
             }
 
