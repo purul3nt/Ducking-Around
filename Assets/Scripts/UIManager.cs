@@ -19,14 +19,17 @@ namespace DuckingAround
         public TMP_Text ducksPerDeathText;
 
         [Header("Gold pulse")]
-        [Tooltip("Scale the gold text reaches at peak of pulse when gold is collected.")]
-        public float goldPulseScale = 1.35f;
+        [Tooltip("Scale the gold text reaches at peak of pulse when gold is collected (capped at 1.1 = +10%).")]
+        public float goldPulseScale = 1.1f;
+        const float GoldPulseScaleCap = 1.1f;
         [Tooltip("Duration of the gold pulse animation in seconds.")]
         public float goldPulseDuration = 0.25f;
 
 
         int _lastGold = -1;
         Coroutine _goldPulseRoutine;
+        bool _goldIsScaled;
+        Vector3 _goldRestScale;
         Coroutine _timerPulseRoutine;
 
         [Header("Panels")]
@@ -57,6 +60,14 @@ namespace DuckingAround
             }
 
             Instance = this;
+        }
+
+        void Start()
+        {
+            if (goldText != null)
+                _goldRestScale = goldText.transform.localScale;
+            else
+                _goldRestScale = Vector3.one;
         }
 
         public void UpdateHUD()
@@ -190,15 +201,15 @@ namespace DuckingAround
         void TriggerGoldPulse()
         {
             if (goldText == null) return;
-            if (_goldPulseRoutine != null)
-                StopCoroutine(_goldPulseRoutine);
+            if (_goldIsScaled) return;
+            _goldIsScaled = true;
             _goldPulseRoutine = StartCoroutine(GoldPulseRoutine());
         }
 
         IEnumerator GoldPulseRoutine()
         {
             Transform t = goldText.transform;
-            Vector3 baseScale = t.localScale;
+            float peakScale = Mathf.Min(goldPulseScale, GoldPulseScaleCap);
             float half = goldPulseDuration * 0.5f;
             float elapsed = 0f;
 
@@ -206,8 +217,8 @@ namespace DuckingAround
             {
                 elapsed += Time.deltaTime;
                 float tNorm = elapsed / half;
-                float s = Mathf.Lerp(1f, goldPulseScale, tNorm);
-                t.localScale = new Vector3(baseScale.x * s, baseScale.y * s, baseScale.z);
+                float s = Mathf.Lerp(1f, peakScale, tNorm);
+                t.localScale = new Vector3(_goldRestScale.x * s, _goldRestScale.y * s, _goldRestScale.z);
                 yield return null;
             }
             elapsed = half;
@@ -215,12 +226,13 @@ namespace DuckingAround
             {
                 elapsed += Time.deltaTime;
                 float tNorm = (elapsed - half) / half;
-                float s = Mathf.Lerp(goldPulseScale, 1f, tNorm);
-                t.localScale = new Vector3(baseScale.x * s, baseScale.y * s, baseScale.z);
+                float s = Mathf.Lerp(peakScale, 1f, tNorm);
+                t.localScale = new Vector3(_goldRestScale.x * s, _goldRestScale.y * s, _goldRestScale.z);
                 yield return null;
             }
 
-            t.localScale = baseScale;
+            t.localScale = _goldRestScale;
+            _goldIsScaled = false;
             _goldPulseRoutine = null;
         }
 
@@ -229,6 +241,7 @@ namespace DuckingAround
             if (timeText == null) yield break;
             Transform t = timeText.transform;
             Vector3 baseScale = t.localScale;
+            float peakScale = Mathf.Min(goldPulseScale, GoldPulseScaleCap);
             float half = goldPulseDuration * 0.5f;
 
             while (GameManager.Instance != null && GameManager.Instance.sessionActive)
@@ -241,7 +254,7 @@ namespace DuckingAround
                 {
                     elapsed += Time.deltaTime;
                     float tNorm = elapsed / half;
-                    float s = Mathf.Lerp(1f, goldPulseScale, tNorm);
+                    float s = Mathf.Lerp(1f, peakScale, tNorm);
                     t.localScale = new Vector3(baseScale.x * s, baseScale.y * s, baseScale.z);
                     yield return null;
                 }
@@ -250,7 +263,7 @@ namespace DuckingAround
                 {
                     elapsed += Time.deltaTime;
                     float tNorm = (elapsed - half) / half;
-                    float s = Mathf.Lerp(goldPulseScale, 1f, tNorm);
+                    float s = Mathf.Lerp(peakScale, 1f, tNorm);
                     t.localScale = new Vector3(baseScale.x * s, baseScale.y * s, baseScale.z);
                     yield return null;
                 }

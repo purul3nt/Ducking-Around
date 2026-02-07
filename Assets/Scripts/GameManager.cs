@@ -292,147 +292,148 @@ namespace DuckingAround
 
         int _maxDucksBonus;
 
+        /// <summary>Register all upgrades. To configure costs, change the second parameter (gold cost) in each AddUpgrade("Code", cost, dependency, effect) call below.</summary>
         void InitializeUpgrades()
         {
             upgrades = new Dictionary<string, UpgradeNode>();
             _maxDucksBonus = 0;
             maxDucks = baseMaxDucks;
 
-            AddUpgrade("U1", 2, null, () =>
+            AddUpgrade("U1", 20, null, () =>
             {
                 // Session Time +2 seconds
                 sessionDuration += 2f;
             });
 
-            AddUpgrade("U2", 2, null, () =>
+            AddUpgrade("U2", 20, null, () =>
             {
                 // Breaker Radius +15%
                 breakerRadius *= 1.15f;
             });
 
-            AddUpgrade("U3", 6, "U1", () =>
+            AddUpgrade("U3", 60, "U1", () =>
             {
                 // Breaker Damage +10%
                 breakerDamage *= 1.10f;
             });
 
-            AddUpgrade("U4", 7, null, () =>
+            AddUpgrade("U4", 70, null, () =>
             {
                 // Max Ducks +10 (on top of base)
                 _maxDucksBonus += 10;
                 maxDucks = baseMaxDucks + _maxDucksBonus;
             });
 
-            AddUpgrade("U5", 7, "U2", () =>
+            AddUpgrade("U5", 70, "U2", () =>
             {
                 // Breaker Radius +25%
                 breakerRadius *= 1.25f;
             });
 
-            AddUpgrade("U6", 18, "U3", () =>
+            AddUpgrade("U6", 180, "U3", () =>
             {
                 // Breaker Damage +1
                 breakerDamage += 1f;
             });
 
-            AddUpgrade("U7", 25, "U4", () =>
+            AddUpgrade("U7", 250, "U4", () =>
             {
                 // Max Ducks +25 more (on top of base + U4)
                 _maxDucksBonus += 25;
                 maxDucks = baseMaxDucks + _maxDucksBonus;
             });
 
-            AddUpgrade("U8", 30, "U7", () =>
+            AddUpgrade("U8", 300, "U7", () =>
             {
                 // Breaker Speed +25%
                 breakerSpeedMultiplier *= 1.25f;
             });
 
-            AddUpgrade("U9", 20, null, () =>
+            AddUpgrade("U9", 200, null, () =>
             {
                 // Breaker Critical Damage Chance +10%
                 breakerCritChance += 0.10f;
             });
 
-            AddUpgrade("U10", 20, "U8", () =>
+            AddUpgrade("U10", 200, "U8", () =>
             {
                 // Duck Size +10%
                 duckSizeMultiplier += 0.10f;
             });
 
-            AddUpgrade("U11", 15, "U9", () =>
+            AddUpgrade("U11", 150, "U9", () =>
             {
                 // Breaker Critical Damage Chance +5%
                 breakerCritChance += 0.05f;
             });
 
-            AddUpgrade("U12", 40, "U8", () =>
+            AddUpgrade("U12", 400, "U8", () =>
             {
                 // Breaker Speed +25%
                 breakerSpeedMultiplier *= 1.25f;
             });
 
-            AddUpgrade("U13", 40, "U5", () =>
+            AddUpgrade("U13", 400, "U5", () =>
             {
                 // Breaker Radius +25%
                 breakerRadius *= 1.25f;
             });
 
-            AddUpgrade("U14", 50, "U11", () =>
+            AddUpgrade("U14", 500, "U11", () =>
             {
                 // Breaker Damage +10%
                 breakerDamage *= 1.10f;
             });
 
-            AddUpgrade("U15", 60, "U10", () =>
+            AddUpgrade("U15", 600, "U10", () =>
             {
                 // Duck Size +10%
                 duckSizeMultiplier += 0.10f;
             });
 
-            AddUpgrade("U16", 60, "U15", () =>
+            AddUpgrade("U16", 600, "U15", () =>
             {
                 // Breaker Speed +25%
                 breakerSpeedMultiplier *= 1.25f;
             });
 
-            AddUpgrade("U17", 60, "U16", () =>
+            AddUpgrade("U17", 600, "U16", () =>
             {
                 // Duck Mass: 40% more gold awarded
                 duckGoldMultiplier *= 1.4f;
             });
 
-            AddUpgrade("U18", 80, "U17", () =>
+            AddUpgrade("U18", 800, "U17", () =>
             {
                 // Breaker Damage +2
                 breakerDamage += 2f;
             });
 
-            AddUpgrade("U19", 60, "U18", () =>
+            AddUpgrade("U19", 600, "U18", () =>
             {
                 // Breaker Damage +1
                 breakerDamage += 1f;
             });
 
-            AddUpgrade("U20", 60, "U16", () =>
+            AddUpgrade("U20", 600, "U16", () =>
             {
                 // Breaker Critical Damage Chance +10%
                 breakerCritChance += 0.10f;
             });
 
-            AddUpgrade("U21", 65, "U16", () =>
+            AddUpgrade("U21", 650, "U16", () =>
             {
                 // Breaker Critical Damage Bonus +25%
                 breakerCritBonus += 0.25f;
             });
 
-            AddUpgrade("U22", 70, "U20", () =>
+            AddUpgrade("U22", 700, "U20", () =>
             {
                 // Duck Mass: 50% more gold awarded
                 duckGoldMultiplier *= 1.5f;
             });
 
-            AddUpgrade("U23", 35, "U7", () =>
+            AddUpgrade("U23", 850, "U7", () =>
             {
                 // +1 duck spawned per death
                 ducksPerDeath += 1;

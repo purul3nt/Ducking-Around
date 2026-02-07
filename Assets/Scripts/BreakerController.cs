@@ -69,11 +69,14 @@ namespace DuckingAround
             if (damageTimer <= 0f)
             {
                 damageTimer = damageTickInterval;
-                if (ApplyDamage())
+                var (hitAny, killCount) = ApplyDamage();
+                if (hitAny)
                 {
                     if (MusicManager.Instance != null)
                         MusicManager.Instance.PlayBreakerHitSfx();
                 }
+                if (killCount >= 5 && CameraShake.Instance != null)
+                    CameraShake.Instance.Shake();
                 TriggerBounce();
             }
 
@@ -100,10 +103,10 @@ namespace DuckingAround
             }
         }
 
-        /// <returns>True if at least one duck was hit this pulse.</returns>
-        bool ApplyDamage()
+        /// <returns>(hitAny, killCount) — true if at least one duck was hit, and how many ducks were killed this pulse.</returns>
+        (bool hitAny, int killCount) ApplyDamage()
         {
-            if (GameManager.Instance == null) return false;
+            if (GameManager.Instance == null) return (false, 0);
 
             // Slightly pad the logical radius so the visual breaker ring feels
             // generous when overlapping ducks.
@@ -113,6 +116,7 @@ namespace DuckingAround
             // (e.g. via OnDuckKilled/SpawnDuck) while we are iterating.
             var ducksSnapshot = GameManager.Instance.Ducks.ToArray();
             bool hitAny = false;
+            int killCount = 0;
 
             foreach (var duck in ducksSnapshot)
             {
@@ -127,12 +131,14 @@ namespace DuckingAround
                     hitAny = true;
                     int damage = GameManager.Instance.GetBreakerDamage();
                     duck.TakeDamage(damage);
+                    if (duck.hp <= 0)
+                        killCount++;
                     if (FloatingDamageNumbersManager.Instance != null)
                         FloatingDamageNumbersManager.Instance.ShowDamage(damage, duck.transform.position);
                 }
             }
 
-            return hitAny;
+            return (hitAny, killCount);
         }
 
         void TriggerBounce()

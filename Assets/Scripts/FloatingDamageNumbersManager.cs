@@ -13,12 +13,20 @@ namespace DuckingAround
         public static FloatingDamageNumbersManager Instance { get; private set; }
 
         [Header("Appearance")]
+        [Tooltip("Colour of the damage number text.")]
+        public Color damageNumberColor = Color.white;
         [Tooltip("Height in world units above the hit point to spawn the number.")]
         public float spawnHeightOffset = 0.2f;
         [Tooltip("World scale of the damage number (small = 0.1–0.2).")]
         public float worldScale = 0.15f;
         [Tooltip("Font size for the damage text.")]
         public int fontSize = 48;
+
+        [Header("Arc animation")]
+        [Tooltip("Initial upward speed (world units per second) so the number rises quickly from the duck.")]
+        public float riseSpeed = 1.5f;
+        [Tooltip("Gravity (world units per second²) applied so the number falls in an arc after rising.")]
+        public float arcGravity = 4f;
 
         void Awake()
         {
@@ -56,7 +64,7 @@ namespace DuckingAround
             tmp.text = amount.ToString();
             tmp.fontSize = fontSize;
             tmp.alignment = TextAlignmentOptions.Center;
-            tmp.color = Color.white;
+            tmp.color = damageNumberColor;
 
             var textRect = textGo.GetComponent<RectTransform>();
             textRect.anchorMin = Vector2.zero;
@@ -65,7 +73,7 @@ namespace DuckingAround
             textRect.offsetMax = Vector2.zero;
 
             var fdn = root.AddComponent<FloatingDamageNumber>();
-            fdn.Init(amount, cg);
+            fdn.Init(amount, cg, riseSpeed, arcGravity);
         }
     }
 }

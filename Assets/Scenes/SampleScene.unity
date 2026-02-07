@@ -5760,9 +5760,12 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b37f8251f75678440b0e832d737e3661, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  damageNumberColor: {r: 0.11320752, g: 0.10412956, b: 0.10412956, a: 1}
   spawnHeightOffset: 0.2
   worldScale: 0.05
   fontSize: 3
+  riseSpeed: 1.5
+  arcGravity: 5
 --- !u!4 &676791533
 Transform:
   m_ObjectHideFlags: 0
