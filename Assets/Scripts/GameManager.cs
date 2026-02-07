@@ -70,8 +70,10 @@ namespace DuckingAround
 
         [Tooltip("Number of ducks to spawn when one dies.")]
         public int ducksPerDeath = 1;
-        [Tooltip("Maximum number of ducks allowed in the scene at once.")]
-        public int maxDucks = 20;
+        [Tooltip("Starting maximum number of ducks (before upgrades). Upgrades add on top of this.")]
+        public int baseMaxDucks = 20;
+        [Tooltip("Maximum number of ducks allowed in the scene at once (base + upgrade bonuses).")]
+        [HideInInspector] public int maxDucks = 20;
         [Tooltip("Global size multiplier applied to all ducks.")]
         public float duckSizeMultiplier = 1f;
         [Tooltip("Gold multiplier applied per duck killed (1 = normal).")]
@@ -267,9 +269,13 @@ namespace DuckingAround
 
         // --- Upgrade system -------------------------------------------------
 
+        int _maxDucksBonus;
+
         void InitializeUpgrades()
         {
             upgrades = new Dictionary<string, UpgradeNode>();
+            _maxDucksBonus = 0;
+            maxDucks = baseMaxDucks;
 
             AddUpgrade("U1", 2, null, () =>
             {
@@ -291,8 +297,9 @@ namespace DuckingAround
 
             AddUpgrade("U4", 7, null, () =>
             {
-                // Max Number of ducks = 30
-                maxDucks = 30;
+                // Max Ducks +10 (on top of base)
+                _maxDucksBonus += 10;
+                maxDucks = baseMaxDucks + _maxDucksBonus;
             });
 
             AddUpgrade("U5", 7, "U2", () =>
@@ -309,8 +316,9 @@ namespace DuckingAround
 
             AddUpgrade("U7", 25, "U4", () =>
             {
-                // Max Number of ducks = 55
-                maxDucks = 55;
+                // Max Ducks +25 more (on top of base + U4)
+                _maxDucksBonus += 25;
+                maxDucks = baseMaxDucks + _maxDucksBonus;
             });
 
             AddUpgrade("U8", 30, "U7", () =>
@@ -402,6 +410,20 @@ namespace DuckingAround
                 // Duck Mass: 50% more gold awarded
                 duckGoldMultiplier *= 1.5f;
             });
+
+            AddUpgrade("U23", 35, "U7", () =>
+            {
+                // +1 duck spawned per death
+                ducksPerDeath += 1;
+            });
+
+            // Special duck spawn chance (tier I: depend on Session Time; tier II: depend on tier I)
+            AddUpgrade("U24", 8, "U1", () => { electroDuckChance += 0.05f; });
+            AddUpgrade("U25", 8, "U1", () => { lazerDuckChance += 0.05f; });
+            AddUpgrade("U26", 8, "U1", () => { fireDuckChance += 0.05f; });
+            AddUpgrade("U27", 25, "U24", () => { electroDuckChance += 0.10f; });
+            AddUpgrade("U28", 25, "U25", () => { lazerDuckChance += 0.10f; });
+            AddUpgrade("U29", 25, "U26", () => { fireDuckChance += 0.10f; });
         }
 
         void AddUpgrade(string code, int cost, string dependencyCode, System.Action applyEffect)
@@ -545,6 +567,13 @@ namespace DuckingAround
                 case "U20": return "+Crit Chance III";
                 case "U21": return "+Crit Damage";
                 case "U22": return "+Duck Mass II";
+                case "U23": return "+Ducks Per Death";
+                case "U24": return "+Electro Duck I";
+                case "U25": return "+Lazer Duck I";
+                case "U26": return "+Fire Duck I";
+                case "U27": return "+Electro Duck II";
+                case "U28": return "+Lazer Duck II";
+                case "U29": return "+Fire Duck II";
                 default: return code;
             }
         }

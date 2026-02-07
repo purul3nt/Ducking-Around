@@ -164,14 +164,50 @@ namespace DuckingAround
                 maxLayer = Mathf.Max(maxLayer, layerById[id]);
             }
 
-            // Group by layer, sort within layer by id
+            // Group by layer
             var byLayer = new Dictionary<int, List<string>>();
             for (int i = 0; i <= maxLayer; i++)
                 byLayer[i] = new List<string>();
             foreach (var id in idToDef.Keys)
                 byLayer[layerById[id]].Add(id);
-            foreach (var list in byLayer.Values)
-                list.Sort(StringComparer.Ordinal);
+
+            // Crossing minimization: order nodes within each layer so edges cross less (barycentric / median heuristic)
+            const int crossingPasses = 4;
+            for (int pass = 0; pass < crossingPasses; pass++)
+            {
+                // Forward: order each layer by median index of prerequisites in previous layer
+                for (int layer = 1; layer <= maxLayer; layer++)
+                {
+                    var list = byLayer[layer];
+                    var prevList = byLayer[layer - 1];
+                    var indexInPrev = new Dictionary<string, int>();
+                    for (int i = 0; i < prevList.Count; i++)
+                        indexInPrev[prevList[i]] = i;
+                    list.Sort((a, b) =>
+                    {
+                        float medA = MedianPrereqIndex(idToDef[a], indexInPrev, prevList.Count);
+                        float medB = MedianPrereqIndex(idToDef[b], indexInPrev, prevList.Count);
+                        int c = medA.CompareTo(medB);
+                        return c != 0 ? c : string.CompareOrdinal(a, b);
+                    });
+                }
+                // Backward: order each layer by median index of dependents in next layer
+                for (int layer = maxLayer - 1; layer >= 0; layer--)
+                {
+                    var list = byLayer[layer];
+                    var nextList = byLayer[layer + 1];
+                    var indexInNext = new Dictionary<string, int>();
+                    for (int i = 0; i < nextList.Count; i++)
+                        indexInNext[nextList[i]] = i;
+                    list.Sort((a, b) =>
+                    {
+                        float medA = MedianDependentIndex(dependents[a], indexInNext, nextList.Count);
+                        float medB = MedianDependentIndex(dependents[b], indexInNext, nextList.Count);
+                        int c = medA.CompareTo(medB);
+                        return c != 0 ? c : string.CompareOrdinal(a, b);
+                    });
+                }
+            }
 
             // Read Button size from the prefab asset so we use intended height (e.g. 120), not the clone's layout-affected value
             Vector2 buttonSizeFromPrefab = new Vector2(160f, 120f);
@@ -374,6 +410,38 @@ namespace DuckingAround
         public Color EdgeSatisfiedColor => edgeSatisfiedColor;
         public Color EdgeUnsatisfiedColor => edgeUnsatisfiedColor;
 
+        static float MedianPrereqIndex(UpgradeDef def, Dictionary<string, int> indexInPrev, int layerSize)
+        {
+            if (def.requiresIds == null || def.requiresIds.Count == 0)
+                return layerSize * 0.5f;
+            var indices = new List<int>();
+            foreach (var reqId in def.requiresIds)
+            {
+                if (indexInPrev.TryGetValue(reqId, out int idx))
+                    indices.Add(idx);
+            }
+            if (indices.Count == 0) return layerSize * 0.5f;
+            indices.Sort();
+            int m = indices.Count / 2;
+            return indices.Count % 2 == 1 ? indices[m] : (indices[m - 1] + indices[m]) * 0.5f;
+        }
+
+        static float MedianDependentIndex(List<string> dependents, Dictionary<string, int> indexInNext, int layerSize)
+        {
+            if (dependents == null || dependents.Count == 0)
+                return layerSize * 0.5f;
+            var indices = new List<int>();
+            foreach (var depId in dependents)
+            {
+                if (indexInNext.TryGetValue(depId, out int idx))
+                    indices.Add(idx);
+            }
+            if (indices.Count == 0) return layerSize * 0.5f;
+            indices.Sort();
+            int m = indices.Count / 2;
+            return indices.Count % 2 == 1 ? indices[m] : (indices[m - 1] + indices[m]) * 0.5f;
+        }
+
         void Clear()
         {
             foreach (var n in _nodes.Values)
@@ -429,10 +497,19 @@ namespace DuckingAround
             RectTransform edgeParent = _rect.parent as RectTransform;
             if (edgeParent == null) return;
 
-            // Get connection points in world space: bottom-center of "from", top-center of "to"
-            float fromH = _from.rect.height > 0.1f ? _from.rect.height : 120f;
-            Vector3 worldA = _from.TransformPoint(new Vector3(_from.rect.width * 0.5f, -fromH, 0f));
-            Vector3 worldB = _to.TransformPoint(new Vector3(_to.rect.width * 0.5f, 0f, 0f));
+            // Get connection points: use the Button child's rect if present (actual button), else node root; use center in world space
+            RectTransform fromRect = _from;
+            RectTransform toRect = _to;
+            var fromBtn = _from.GetComponentInChildren<Button>(true);
+            var toBtn = _to.GetComponentInChildren<Button>(true);
+            if (fromBtn != null) fromRect = fromBtn.GetComponent<RectTransform>();
+            if (toBtn != null) toRect = toBtn.GetComponent<RectTransform>();
+            if (fromRect == null) fromRect = _from;
+            if (toRect == null) toRect = _to;
+            Vector2 fromCenter = fromRect.rect.center;
+            Vector2 toCenter = toRect.rect.center;
+            Vector3 worldA = fromRect.TransformPoint(new Vector3(fromCenter.x, fromCenter.y, 0f));
+            Vector3 worldB = toRect.TransformPoint(new Vector3(toCenter.x, toCenter.y, 0f));
 
             // Convert to edge container's local space (origin at container pivot/center)
             Vector2 localA = edgeParent.InverseTransformPoint(worldA);

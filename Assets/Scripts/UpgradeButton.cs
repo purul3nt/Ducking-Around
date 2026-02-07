@@ -231,6 +231,36 @@ namespace DuckingAround
                     if (titleText != null) titleText.text = "+Duck Mass II";
                     if (descriptionText != null) descriptionText.text = "Ducks award 50% more gold.";
                     break;
+
+                case "U23":
+                    if (titleText != null) titleText.text = "+Ducks Per Death";
+                    if (descriptionText != null) descriptionText.text = "One extra duck spawns each time a duck is killed.";
+                    break;
+
+                case "U24":
+                    if (titleText != null) titleText.text = "+Electro Duck I";
+                    if (descriptionText != null) descriptionText.text = "+5% chance to spawn Electro Ducks (chain lightning).";
+                    break;
+                case "U25":
+                    if (titleText != null) titleText.text = "+Lazer Duck I";
+                    if (descriptionText != null) descriptionText.text = "+5% chance to spawn Lazer Ducks (screen lazer).";
+                    break;
+                case "U26":
+                    if (titleText != null) titleText.text = "+Fire Duck I";
+                    if (descriptionText != null) descriptionText.text = "+5% chance to spawn Fire Ducks (explode on death).";
+                    break;
+                case "U27":
+                    if (titleText != null) titleText.text = "+Electro Duck II";
+                    if (descriptionText != null) descriptionText.text = "+10% more chance to spawn Electro Ducks.";
+                    break;
+                case "U28":
+                    if (titleText != null) titleText.text = "+Lazer Duck II";
+                    if (descriptionText != null) descriptionText.text = "+10% more chance to spawn Lazer Ducks.";
+                    break;
+                case "U29":
+                    if (titleText != null) titleText.text = "+Fire Duck II";
+                    if (descriptionText != null) descriptionText.text = "+10% more chance to spawn Fire Ducks.";
+                    break;
             }
         }
 

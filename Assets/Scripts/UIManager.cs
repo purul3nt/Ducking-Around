@@ -70,6 +70,12 @@ namespace DuckingAround
             if (upgradesPanel != null)
             {
                 upgradesPanel.SetActive(show);
+                if (show && upgradeGraphView != null)
+                {
+                    var binder = upgradeGraphView.GetComponent<UpgradeGraphBinder>();
+                    if (binder != null)
+                        binder.BuildFromGameManager();
+                }
             }
         }
 
