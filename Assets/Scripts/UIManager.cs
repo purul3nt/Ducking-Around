@@ -1,3 +1,4 @@
+using System.Collections;
 using UnityEngine;
 using TMPro;
 
@@ -16,6 +17,15 @@ namespace DuckingAround
         public TMP_Text timeText;
         public TMP_Text breakerRadiusText;
         public TMP_Text ducksPerDeathText;
+
+        [Header("Gold pulse")]
+        [Tooltip("Scale the gold text reaches at peak of pulse when gold is collected.")]
+        public float goldPulseScale = 1.35f;
+        [Tooltip("Duration of the gold pulse animation in seconds.")]
+        public float goldPulseDuration = 0.25f;
+
+        int _lastGold = -1;
+        Coroutine _goldPulseRoutine;
 
         [Header("Panels")]
         public GameObject upgradesPanel;
@@ -44,7 +54,18 @@ namespace DuckingAround
             if (GameManager.Instance == null) return;
             var gm = GameManager.Instance;
 
-            if (goldText != null) goldText.text = gm.gold.ToString();
+            if (goldText != null)
+            {
+                int currentGold = gm.gold;
+                goldText.text = currentGold.ToString();
+                if (_lastGold >= 0 && currentGold > _lastGold)
+                    TriggerGoldPulse();
+                _lastGold = currentGold;
+            }
+            else
+            {
+                _lastGold = gm.gold;
+            }
             if (timeText != null) timeText.text = gm.timeLeft.ToString("0.0") + "s";
             if (breakerRadiusText != null) breakerRadiusText.text = gm.breakerRadius.ToString("0.00");
             if (ducksPerDeathText != null) ducksPerDeathText.text = gm.ducksPerDeath.ToString();
@@ -98,6 +119,43 @@ namespace DuckingAround
         {
             if (GameManager.Instance == null) return;
             GameManager.Instance.StartNewSession();
+        }
+
+        void TriggerGoldPulse()
+        {
+            if (goldText == null) return;
+            if (_goldPulseRoutine != null)
+                StopCoroutine(_goldPulseRoutine);
+            _goldPulseRoutine = StartCoroutine(GoldPulseRoutine());
+        }
+
+        IEnumerator GoldPulseRoutine()
+        {
+            Transform t = goldText.transform;
+            Vector3 baseScale = t.localScale;
+            float half = goldPulseDuration * 0.5f;
+            float elapsed = 0f;
+
+            while (elapsed < half)
+            {
+                elapsed += Time.deltaTime;
+                float tNorm = elapsed / half;
+                float s = Mathf.Lerp(1f, goldPulseScale, tNorm);
+                t.localScale = new Vector3(baseScale.x * s, baseScale.y * s, baseScale.z);
+                yield return null;
+            }
+            elapsed = half;
+            while (elapsed < goldPulseDuration)
+            {
+                elapsed += Time.deltaTime;
+                float tNorm = (elapsed - half) / half;
+                float s = Mathf.Lerp(goldPulseScale, 1f, tNorm);
+                t.localScale = new Vector3(baseScale.x * s, baseScale.y * s, baseScale.z);
+                yield return null;
+            }
+
+            t.localScale = baseScale;
+            _goldPulseRoutine = null;
         }
     }
 }
