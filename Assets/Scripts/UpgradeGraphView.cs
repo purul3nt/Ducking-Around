@@ -426,19 +426,27 @@ namespace DuckingAround
         {
             if (_from == null || _to == null || _rect == null || _image == null) return;
 
-            // Top-to-bottom: from bottom-center of "from" to top-center of "to" (anchors are top-center)
-            // Use node's actual height (from prefab); fallback if layout not ready yet
+            RectTransform edgeParent = _rect.parent as RectTransform;
+            if (edgeParent == null) return;
+
+            // Get connection points in world space: bottom-center of "from", top-center of "to"
             float fromH = _from.rect.height > 0.1f ? _from.rect.height : 120f;
-            float toH = _to.rect.height > 0.1f ? _to.rect.height : 120f;
-            Vector2 a = _from.anchoredPosition + new Vector2(0f, -fromH);
-            Vector2 b = _to.anchoredPosition + new Vector2(0f, 0f);
-            Vector2 dir = b - a;
+            Vector3 worldA = _from.TransformPoint(new Vector3(_from.rect.width * 0.5f, -fromH, 0f));
+            Vector3 worldB = _to.TransformPoint(new Vector3(_to.rect.width * 0.5f, 0f, 0f));
+
+            // Convert to edge container's local space (origin at container pivot/center)
+            Vector2 localA = edgeParent.InverseTransformPoint(worldA);
+            Vector2 localB = edgeParent.InverseTransformPoint(worldB);
+
+            Vector2 dir = localB - localA;
             float len = dir.magnitude;
             if (len < 1f) len = 1f;
             float lineW = _graph != null ? _graph.edgeLineWidth : 5f;
             _rect.sizeDelta = new Vector2(len, lineW);
-            _rect.anchoredPosition = a;
             _rect.pivot = new Vector2(0f, 0.5f);
+            _rect.anchorMin = new Vector2(0.5f, 0.5f);
+            _rect.anchorMax = new Vector2(0.5f, 0.5f);
+            _rect.anchoredPosition = localA;
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
             _rect.localRotation = Quaternion.Euler(0f, 0f, angle);
         }
