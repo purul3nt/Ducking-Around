@@ -68,7 +68,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   maxHp: 3
-  hp: 0
+  hp: 2
   bobAmplitude: 0.04
   bobSpeed: 2
   swimSpeed: 0.4

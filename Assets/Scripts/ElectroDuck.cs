@@ -18,9 +18,29 @@ namespace DuckingAround
         [Tooltip("Optional FX prefab to show a bolt to each chained duck. Add LightningBoltFx + LineRenderer for a visible bolt.")]
         public GameObject lightningBoltFxPrefab;
 
+        bool hasChained;
+
+        /// <summary>
+        /// Electro Duck mesh is on a child; use that for hit flash.
+        /// </summary>
+        protected override Renderer GetFlashRenderer()
+        {
+            for (int i = 0; i < transform.childCount; i++)
+            {
+                var r = transform.GetChild(i).GetComponentInChildren<Renderer>();
+                if (r != null)
+                    return r;
+            }
+            return null;
+        }
+
         protected override void Die()
         {
-            DoChainLightning();
+            if (!hasChained)
+            {
+                hasChained = true;
+                DoChainLightning();
+            }
             base.Die();
         }
 

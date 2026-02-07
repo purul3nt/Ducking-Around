@@ -43,6 +43,10 @@ namespace DuckingAround
         public Duck electroDuckPrefab;
         [Tooltip("Chance (0–1) that a spawned duck will be an Electro Duck instead of a normal duck.")]
         public float electroDuckChance = 0.1f;
+        [Tooltip("Optional prefab for Lazer Duck (screen-width lazer on death).")]
+        public Duck lazerDuckPrefab;
+        [Tooltip("Chance (0–1) that a spawned duck will be a Lazer Duck instead of a normal duck.")]
+        public float lazerDuckChance = 0.1f;
         [Tooltip("Initial number of ducks to spawn at the start of a session.")]
         public int initialDuckCount = 4;
         [Tooltip("Radius of the hot tub in world units, used for random spawn positions.")]
@@ -199,28 +203,19 @@ namespace DuckingAround
             // Spawn facing a random horizontal direction so swimming follows rotation.
             Quaternion rot = Quaternion.Euler(0f, Random.Range(0f, 360f), 0f);
 
-            // Decide which duck type to spawn (normal vs Fire vs Electro).
+            // Decide which duck type to spawn (normal vs Fire vs Electro vs Lazer).
             Duck prefabToUse = duckPrefab;
             float roll = Random.value;
-            float fireThreshold = fireDuckChance;
-            float electroThreshold = fireDuckChance + electroDuckChance;
+            float e = electroDuckChance;
+            float f = fireDuckChance;
+            float l = lazerDuckChance;
 
-            if (electroDuckPrefab != null && roll < electroThreshold)
-            {
-                // First slice goes to Electro, then Fire, depending on how you set the chances.
-                if (roll < electroDuckChance)
-                {
-                    prefabToUse = electroDuckPrefab;
-                }
-                else if (fireDuckPrefab != null)
-                {
-                    prefabToUse = fireDuckPrefab;
-                }
-            }
-            else if (fireDuckPrefab != null && roll < fireThreshold)
-            {
+            if (electroDuckPrefab != null && roll < e)
+                prefabToUse = electroDuckPrefab;
+            else if (fireDuckPrefab != null && roll < e + f)
                 prefabToUse = fireDuckPrefab;
-            }
+            else if (lazerDuckPrefab != null && roll < e + f + l)
+                prefabToUse = lazerDuckPrefab;
 
             Duck d = Instantiate(prefabToUse, pos, rot);
 

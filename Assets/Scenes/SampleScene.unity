@@ -2121,6 +2121,8 @@ MonoBehaviour:
   fireDuckChance: 0.15
   electroDuckPrefab: {fileID: 3497190540865605866, guid: 410a740c10cac89488bae33cbf343c7f, type: 3}
   electroDuckChance: 0.15
+  lazerDuckPrefab: {fileID: 624045533326058898, guid: 7d193cafff377b1408152de22a211073, type: 3}
+  lazerDuckChance: 0.2
   initialDuckCount: 4
   tubRadius: 5
   crocodileCenterXZ: {x: 0.2, y: 0}
