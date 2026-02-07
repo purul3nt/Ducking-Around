@@ -91,7 +91,7 @@ namespace DuckingAround
                     duck.TakeDamage(lazerDamage);
             }
 
-            // Visual: LineRenderer from start to end.
+            // Visual: LineRenderer from start to end (width animated thin -> full -> thin).
             if (lazerLinePrefab != null)
             {
                 GameObject go = Instantiate(lazerLinePrefab, start, Quaternion.identity);
@@ -102,10 +102,14 @@ namespace DuckingAround
                     lr.positionCount = 2;
                     lr.SetPosition(0, start);
                     lr.SetPosition(1, end);
-                    lr.startWidth = lazerWidth;
-                    lr.endWidth = lazerWidth;
+                    lr.startWidth = 0.001f;
+                    lr.endWidth = 0.001f;
                 }
-                Destroy(go, lazerDuration);
+                var fx = go.GetComponent<LazerLineFx>();
+                if (fx == null) fx = go.AddComponent<LazerLineFx>();
+                fx.lineRenderer = lr;
+                fx.duration = lazerDuration;
+                fx.targetWidth = lazerWidth;
             }
         }
 
