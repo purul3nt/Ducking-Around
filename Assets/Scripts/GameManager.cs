@@ -84,6 +84,17 @@ namespace DuckingAround
 
         Dictionary<string, UpgradeNode> upgrades;
 
+        [Header("Upgrade icons")]
+        [Tooltip("Assign an icon sprite per upgrade code (e.g. U1, U2...). Used by UpgradeButton if Icon Image is set.")]
+        public List<UpgradeIconEntry> upgradeIcons = new List<UpgradeIconEntry>();
+
+        [System.Serializable]
+        public class UpgradeIconEntry
+        {
+            public string upgradeCode;
+            public Sprite icon;
+        }
+
         private void Awake()
         {
             if (Instance != null && Instance != this)
@@ -492,6 +503,20 @@ namespace DuckingAround
             if (IsUpgradePurchased(code)) return UpgradeNodeState.Unlocked;
             if (IsUpgradeAvailable(code)) return UpgradeNodeState.Available;
             return UpgradeNodeState.Locked;
+        }
+
+        /// <summary>
+        /// Returns the icon sprite for an upgrade code, or null if not assigned.
+        /// </summary>
+        public Sprite GetUpgradeIcon(string code)
+        {
+            if (upgradeIcons == null || string.IsNullOrEmpty(code)) return null;
+            foreach (var e in upgradeIcons)
+            {
+                if (e != null && e.upgradeCode == code && e.icon != null)
+                    return e.icon;
+            }
+            return null;
         }
 
         static string GetUpgradeDisplayName(string code)

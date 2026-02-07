@@ -21,20 +21,27 @@ namespace DuckingAround
         public TMP_Text titleText;
         public TMP_Text descriptionText;
         public TMP_Text costText;
+        [Tooltip("Optional: Image to show the upgrade icon. Sprite is set from GameManager's upgrade icons list.")]
+        public Image iconImage;
         public GameObject lockedOverlay;
         public GameObject purchasedOverlay;
 
         [Header("Hover")]
-        [Tooltip("Optional container that holds title/description/cost; enabled only on hover.")]
+        [Tooltip("Optional container that holds only description and cost; shown on hover. Title is always visible.")]
         public GameObject hoverPanel;
+
+        [Header("Highlight")]
+        [Tooltip("Button image tint when purchasable (available + can afford).")]
+        public Color purchasableHighlightColor = new Color(0.45f, 0.95f, 0.45f);
+        [Tooltip("Button image tint when locked or unaffordable.")]
+        public Color lockedTintColor = new Color(0.75f, 0.75f, 0.75f);
 
         Button button;
 
         void Awake()
         {
-            button = GetComponent<Button>();
-
-            // Hide hover info by default.
+            button = GetComponentInChildren<Button>(true);
+            // Title always visible; hide only cost and description until hover.
             SetHoverVisible(false);
         }
 
@@ -73,6 +80,27 @@ namespace DuckingAround
             if (purchasedOverlay != null)
             {
                 purchasedOverlay.SetActive(purchased);
+            }
+
+            // Highlight: purchasable (available + can afford) gets highlight color; otherwise locked tint
+            var img = button != null ? button.targetGraphic as Image : null;
+            if (img != null)
+            {
+                if (purchased)
+                    img.color = Color.white;
+                else if (available && canAfford)
+                    img.color = purchasableHighlightColor;
+                else
+                    img.color = lockedTintColor;
+            }
+
+            // Icon: set from GameManager's per-upgrade icon list
+            if (iconImage != null)
+            {
+                var icon = GameManager.Instance.GetUpgradeIcon(upgradeCode);
+                iconImage.enabled = icon != null;
+                if (icon != null)
+                    iconImage.sprite = icon;
             }
         }
 
@@ -208,13 +236,13 @@ namespace DuckingAround
 
         void SetHoverVisible(bool visible)
         {
+            // Title is always visible; only cost and description (or hover panel) show on hover.
+            if (titleText != null)
+                titleText.gameObject.SetActive(true);
             if (hoverPanel != null)
-            {
                 hoverPanel.SetActive(visible);
-            }
             else
             {
-                if (titleText != null) titleText.gameObject.SetActive(visible);
                 if (descriptionText != null) descriptionText.gameObject.SetActive(visible);
                 if (costText != null) costText.gameObject.SetActive(visible);
             }

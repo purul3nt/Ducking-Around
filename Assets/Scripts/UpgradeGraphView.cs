@@ -191,16 +191,21 @@ namespace DuckingAround
                     rt.anchoredPosition = new Vector2(x, -layer * layerSpacing);
                     rt.sizeDelta = new Vector2(100f, 28f);
                     rt.localScale = Vector3.one;
-                    // If prefab has a direct child with RectTransform (e.g. nested Canvas), make it fill the node so content is visible
+                    // Only stretch a direct child that looks like a container (e.g. nested Canvas); leave Description/Cost/Button layout as in prefab
                     for (int i = 0; i < rt.childCount; i++)
                     {
-                        var childRt = rt.GetChild(i).GetComponent<RectTransform>();
+                        var child = rt.GetChild(i);
+                        var childRt = child.GetComponent<RectTransform>();
                         if (childRt == null) continue;
-                        childRt.anchorMin = Vector2.zero;
-                        childRt.anchorMax = Vector2.one;
-                        childRt.offsetMin = Vector2.zero;
-                        childRt.offsetMax = Vector2.zero;
-                        childRt.localScale = Vector3.one;
+                        var name = child.name.ToLowerInvariant();
+                        if (name.Contains("canvas") || name.Contains("container"))
+                        {
+                            childRt.anchorMin = Vector2.zero;
+                            childRt.anchorMax = Vector2.one;
+                            childRt.offsetMin = Vector2.zero;
+                            childRt.offsetMax = Vector2.zero;
+                            childRt.localScale = Vector3.one;
+                        }
                         break;
                     }
 
@@ -250,6 +255,9 @@ namespace DuckingAround
                 }
             }
 
+            // Force layout so node rects have valid size before we draw edges
+            Canvas.ForceUpdateCanvases();
+
             // Create edges (prereq -> dependent)
             foreach (var d in defs)
             {
@@ -262,6 +270,10 @@ namespace DuckingAround
                 }
             }
 
+            // Draw edges on top of nodes so lines are visible
+            if (edgeContainer != null)
+                edgeContainer.SetAsLastSibling();
+
             Refresh();
         }
 
@@ -271,8 +283,10 @@ namespace DuckingAround
             go.transform.SetParent(edgeContainer, false);
             var rt = go.AddComponent<RectTransform>();
             var img = go.AddComponent<Image>();
-            img.color = edgeUnsatisfiedColor;
+            img.sprite = GetWhiteSprite();
+            img.color = new Color(edgeUnsatisfiedColor.r, edgeUnsatisfiedColor.g, edgeUnsatisfiedColor.b, 1f);
             img.raycastTarget = false;
+            img.type = Image.Type.Simple;
 
             rt.anchorMin = new Vector2(0f, 0.5f);
             rt.anchorMax = new Vector2(0f, 0.5f);
@@ -283,6 +297,17 @@ namespace DuckingAround
 
             var line = go.AddComponent<GraphEdgeLine>();
             line.SetTransforms(from, to, rt, img, this, fromId);
+        }
+
+        static Sprite _whiteSprite;
+        static Sprite GetWhiteSprite()
+        {
+            if (_whiteSprite != null) return _whiteSprite;
+            var tex = new Texture2D(1, 1);
+            tex.SetPixel(0, 0, Color.white);
+            tex.Apply();
+            _whiteSprite = Sprite.Create(tex, new Rect(0, 0, 1, 1), new Vector2(0.5f, 0.5f));
+            return _whiteSprite;
         }
 
         /// <summary>
@@ -386,12 +411,15 @@ namespace DuckingAround
             if (_from == null || _to == null || _rect == null || _image == null) return;
 
             // Top-to-bottom: from bottom-center of "from" to top-center of "to" (anchors are top-center)
-            Vector2 a = _from.anchoredPosition + new Vector2(0f, -_from.rect.height);
-            Vector2 b = _to.anchoredPosition;
+            float fromH = _from.rect.height > 0.1f ? _from.rect.height : 28f;
+            float toH = _to.rect.height > 0.1f ? _to.rect.height : 28f;
+            Vector2 a = _from.anchoredPosition + new Vector2(0f, -fromH);
+            Vector2 b = _to.anchoredPosition + new Vector2(0f, 0f);
             Vector2 dir = b - a;
             float len = dir.magnitude;
-            if (len < 0.1f) len = 0.1f;
-            _rect.sizeDelta = new Vector2(len, _graph != null ? _graph.edgeLineWidth : 2f);
+            if (len < 1f) len = 1f;
+            float lineW = _graph != null ? _graph.edgeLineWidth : 5f;
+            _rect.sizeDelta = new Vector2(len, lineW);
             _rect.anchoredPosition = a;
             _rect.pivot = new Vector2(0f, 0.5f);
             float angle = Mathf.Atan2(dir.y, dir.x) * Mathf.Rad2Deg;
