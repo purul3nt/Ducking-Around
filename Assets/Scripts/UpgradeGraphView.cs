@@ -173,6 +173,16 @@ namespace DuckingAround
             foreach (var list in byLayer.Values)
                 list.Sort(StringComparer.Ordinal);
 
+            // Read Button size from the prefab asset so we use intended height (e.g. 120), not the clone's layout-affected value
+            Vector2 buttonSizeFromPrefab = new Vector2(160f, 120f);
+            if (nodePrefab != null)
+            {
+                var prefabBtn = nodePrefab.GetComponentInChildren<Button>(true);
+                var prefabBtnRt = prefabBtn != null ? prefabBtn.GetComponent<RectTransform>() : null;
+                if (prefabBtnRt != null)
+                    buttonSizeFromPrefab = new Vector2(prefabBtnRt.sizeDelta.x, prefabBtnRt.sizeDelta.y);
+            }
+
             // Create nodes (top-center anchor; layers go top to bottom; within layer, horizontal row centered)
             foreach (int layer in Enumerable.Range(0, maxLayer + 1))
             {
@@ -189,8 +199,16 @@ namespace DuckingAround
                     rt.anchorMax = new Vector2(0.5f, 1f);
                     rt.pivot = new Vector2(0.5f, 1f);
                     rt.anchoredPosition = new Vector2(x, -layer * layerSpacing);
-                    rt.sizeDelta = new Vector2(100f, 28f);
+                    rt.sizeDelta = buttonSizeFromPrefab;
                     rt.localScale = Vector3.one;
+
+                    var btn = go.GetComponentInChildren<Button>(true);
+                    var buttonRt = btn != null ? btn.GetComponent<RectTransform>() : null;
+                    if (buttonRt != null)
+                    {
+                        buttonRt.sizeDelta = buttonSizeFromPrefab;
+                    }
+
                     // Only stretch a direct child that looks like a container (e.g. nested Canvas); leave Description/Cost/Button layout as in prefab
                     for (int i = 0; i < rt.childCount; i++)
                     {
@@ -208,8 +226,6 @@ namespace DuckingAround
                         }
                         break;
                     }
-
-                    var btn = go.GetComponentInChildren<Button>(true);
                     var img = go.GetComponent<Image>();
                     if (img == null) img = go.GetComponentInChildren<Image>();
                     // Prefer the TMP_Text on the child named "Title" (e.g. Button/Title in the prefab)
@@ -411,8 +427,9 @@ namespace DuckingAround
             if (_from == null || _to == null || _rect == null || _image == null) return;
 
             // Top-to-bottom: from bottom-center of "from" to top-center of "to" (anchors are top-center)
-            float fromH = _from.rect.height > 0.1f ? _from.rect.height : 28f;
-            float toH = _to.rect.height > 0.1f ? _to.rect.height : 28f;
+            // Use node's actual height (from prefab); fallback if layout not ready yet
+            float fromH = _from.rect.height > 0.1f ? _from.rect.height : 120f;
+            float toH = _to.rect.height > 0.1f ? _to.rect.height : 120f;
             Vector2 a = _from.anchoredPosition + new Vector2(0f, -fromH);
             Vector2 b = _to.anchoredPosition + new Vector2(0f, 0f);
             Vector2 dir = b - a;

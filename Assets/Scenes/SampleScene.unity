@@ -1088,9 +1088,12 @@ MonoBehaviour:
   titleText: {fileID: 852951827}
   descriptionText: {fileID: 1328823582}
   costText: {fileID: 1710514132}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &140767723
 GameObject:
   m_ObjectHideFlags: 0
@@ -1244,9 +1247,12 @@ MonoBehaviour:
   titleText: {fileID: 1578809793}
   descriptionText: {fileID: 562683283}
   costText: {fileID: 1567852788}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &142308602
 GameObject:
   m_ObjectHideFlags: 0
@@ -1808,9 +1814,12 @@ MonoBehaviour:
   titleText: {fileID: 1081602928}
   descriptionText: {fileID: 268336903}
   costText: {fileID: 1646892596}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &187590245
 GameObject:
   m_ObjectHideFlags: 0
@@ -2136,6 +2145,51 @@ MonoBehaviour:
   maxDucks: 20
   duckSizeMultiplier: 1
   duckGoldMultiplier: 1
+  upgradeIcons:
+  - upgradeCode: U1
+    icon: {fileID: 21300000, guid: c64d11351d0604244a8d47758c9f8bae, type: 3}
+  - upgradeCode: U2
+    icon: {fileID: 21300000, guid: 74a1d091b587339469269a33f1a70c78, type: 3}
+  - upgradeCode: U3
+    icon: {fileID: 21300000, guid: fcb2a37b52f9f2e49904ca22673738bd, type: 3}
+  - upgradeCode: U4
+    icon: {fileID: 21300000, guid: fceb14b6cf500054da7065ffd65a12b9, type: 3}
+  - upgradeCode: U5
+    icon: {fileID: 21300000, guid: 74a1d091b587339469269a33f1a70c78, type: 3}
+  - upgradeCode: U6
+    icon: {fileID: 21300000, guid: fcb2a37b52f9f2e49904ca22673738bd, type: 3}
+  - upgradeCode: U7
+    icon: {fileID: 21300000, guid: fceb14b6cf500054da7065ffd65a12b9, type: 3}
+  - upgradeCode: U8
+    icon: {fileID: 21300000, guid: 63011ab26d11fe64cbd11eed9101b893, type: 3}
+  - upgradeCode: U9
+    icon: {fileID: 21300000, guid: c5a4a3751dfb42042a8e7d41fdad473b, type: 3}
+  - upgradeCode: U10
+    icon: {fileID: 21300000, guid: b116b8c7d0b1981478fd5cb58b0d7172, type: 3}
+  - upgradeCode: U11
+    icon: {fileID: 21300000, guid: c5a4a3751dfb42042a8e7d41fdad473b, type: 3}
+  - upgradeCode: U12
+    icon: {fileID: 21300000, guid: 63011ab26d11fe64cbd11eed9101b893, type: 3}
+  - upgradeCode: U13
+    icon: {fileID: 21300000, guid: 74a1d091b587339469269a33f1a70c78, type: 3}
+  - upgradeCode: U14
+    icon: {fileID: 21300000, guid: fcb2a37b52f9f2e49904ca22673738bd, type: 3}
+  - upgradeCode: U15
+    icon: {fileID: 21300000, guid: b116b8c7d0b1981478fd5cb58b0d7172, type: 3}
+  - upgradeCode: U16
+    icon: {fileID: 21300000, guid: 63011ab26d11fe64cbd11eed9101b893, type: 3}
+  - upgradeCode: U17
+    icon: {fileID: 21300000, guid: b116b8c7d0b1981478fd5cb58b0d7172, type: 3}
+  - upgradeCode: U18
+    icon: {fileID: 21300000, guid: 63011ab26d11fe64cbd11eed9101b893, type: 3}
+  - upgradeCode: U19
+    icon: {fileID: 21300000, guid: 63011ab26d11fe64cbd11eed9101b893, type: 3}
+  - upgradeCode: U20
+    icon: {fileID: 21300000, guid: 63011ab26d11fe64cbd11eed9101b893, type: 3}
+  - upgradeCode: U21
+    icon: {fileID: 21300000, guid: 63011ab26d11fe64cbd11eed9101b893, type: 3}
+  - upgradeCode: U22
+    icon: {fileID: 21300000, guid: 63011ab26d11fe64cbd11eed9101b893, type: 3}
 --- !u!4 &226109309
 Transform:
   m_ObjectHideFlags: 0
@@ -2576,9 +2630,12 @@ MonoBehaviour:
   titleText: {fileID: 897848099}
   descriptionText: {fileID: 68970458}
   costText: {fileID: 1558371177}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &268336901
 GameObject:
   m_ObjectHideFlags: 0
@@ -2868,9 +2925,12 @@ MonoBehaviour:
   titleText: {fileID: 809838557}
   descriptionText: {fileID: 625813483}
   costText: {fileID: 1107863105}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &286912977
 GameObject:
   m_ObjectHideFlags: 0
@@ -3569,9 +3629,12 @@ MonoBehaviour:
   titleText: {fileID: 111161952}
   descriptionText: {fileID: 2110619223}
   costText: {fileID: 1281190432}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &410087039
 GameObject:
   m_ObjectHideFlags: 0
@@ -4362,9 +4425,12 @@ MonoBehaviour:
   titleText: {fileID: 1064422164}
   descriptionText: {fileID: 1106459320}
   costText: {fileID: 841735198}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &556045120
 GameObject:
   m_ObjectHideFlags: 0
@@ -4518,9 +4584,12 @@ MonoBehaviour:
   titleText: {fileID: 896081657}
   descriptionText: {fileID: 603135715}
   costText: {fileID: 492175524}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &557709980
 GameObject:
   m_ObjectHideFlags: 0
@@ -6033,9 +6102,12 @@ MonoBehaviour:
   titleText: {fileID: 1646656191}
   descriptionText: {fileID: 1703937639}
   costText: {fileID: 1933177686}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &753801219
 GameObject:
   m_ObjectHideFlags: 0
@@ -6463,9 +6535,12 @@ MonoBehaviour:
   titleText: {fileID: 2001558178}
   descriptionText: {fileID: 212833563}
   costText: {fileID: 994730873}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &809838555
 GameObject:
   m_ObjectHideFlags: 0
@@ -7620,9 +7695,12 @@ MonoBehaviour:
   titleText: {fileID: 978136764}
   descriptionText: {fileID: 1452359015}
   costText: {fileID: 2107115163}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &944531090
 GameObject:
   m_ObjectHideFlags: 0
@@ -9867,9 +9945,12 @@ MonoBehaviour:
   titleText: {fileID: 1942293866}
   descriptionText: {fileID: 2023327216}
   costText: {fileID: 395557435}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &1192693652
 GameObject:
   m_ObjectHideFlags: 0
@@ -10159,9 +10240,12 @@ MonoBehaviour:
   titleText: {fileID: 1410558649}
   descriptionText: {fileID: 430867100}
   costText: {fileID: 2087193830}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &1281190430
 GameObject:
   m_ObjectHideFlags: 0
@@ -10587,9 +10671,12 @@ MonoBehaviour:
   titleText: {fileID: 246286914}
   descriptionText: {fileID: 1573244371}
   costText: {fileID: 48277787}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &1328823579
 GameObject:
   m_ObjectHideFlags: 0
@@ -10755,6 +10842,7 @@ RectTransform:
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children:
+  - {fileID: 1744273216}
   - {fileID: 1497576268}
   - {fileID: 2031615835}
   - {fileID: 1114954858}
@@ -11446,9 +11534,12 @@ MonoBehaviour:
   titleText: {fileID: 1457951779}
   descriptionText: {fileID: 227769818}
   costText: {fileID: 965816179}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &1452359013
 GameObject:
   m_ObjectHideFlags: 0
@@ -11874,9 +11965,12 @@ MonoBehaviour:
   titleText: {fileID: 1100330164}
   descriptionText: {fileID: 1887136559}
   costText: {fileID: 1919956670}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &1459498950
 GameObject:
   m_ObjectHideFlags: 0
@@ -13916,9 +14010,12 @@ MonoBehaviour:
   titleText: {fileID: 1973035520}
   descriptionText: {fileID: 658111820}
   costText: {fileID: 1459498951}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &1610947349
 GameObject:
   m_ObjectHideFlags: 0
@@ -14072,9 +14169,12 @@ MonoBehaviour:
   titleText: {fileID: 861476874}
   descriptionText: {fileID: 1367135712}
   costText: {fileID: 1192693654}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &1646656189
 GameObject:
   m_ObjectHideFlags: 0
@@ -14516,8 +14616,8 @@ MonoBehaviour:
   nodePrefab: {fileID: 3043159854154981119, guid: 89cbd5a9e0f9f3844be984030167a306, type: 3}
   nodeContainer: {fileID: 0}
   edgeContainer: {fileID: 0}
-  layerSpacing: 250
-  nodeSpacing: 50
+  layerSpacing: 100
+  nodeSpacing: 250
   unlockedColor: {r: 0.4, g: 0.8, b: 0.4, a: 1}
   availableColor: {r: 0.9, g: 0.9, b: 0.5, a: 1}
   lockedColor: {r: 0.5, g: 0.5, b: 0.5, a: 1}
@@ -14963,6 +15063,81 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1737267274}
   m_CullTransparentMesh: 1
+--- !u!1 &1744273215
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1744273216}
+  - component: {fileID: 1744273218}
+  - component: {fileID: 1744273217}
+  m_Layer: 5
+  m_Name: Background
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!224 &1744273216
+RectTransform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744273215}
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1350655511}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+  m_AnchorMin: {x: 0.5, y: 0.5}
+  m_AnchorMax: {x: 0.5, y: 0.5}
+  m_AnchoredPosition: {x: 0, y: 0}
+  m_SizeDelta: {x: 1900, y: 1500}
+  m_Pivot: {x: 0.5, y: 0.5}
+--- !u!114 &1744273217
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744273215}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: fe87c0e1cc204ed48ad3b37840f39efc, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_Material: {fileID: 0}
+  m_Color: {r: 0, g: 0, b: 0, a: 1}
+  m_RaycastTarget: 1
+  m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
+  m_Maskable: 1
+  m_OnCullStateChanged:
+    m_PersistentCalls:
+      m_Calls: []
+  m_Sprite: {fileID: 0}
+  m_Type: 0
+  m_PreserveAspect: 0
+  m_FillCenter: 1
+  m_FillMethod: 4
+  m_FillAmount: 1
+  m_FillClockwise: 1
+  m_FillOrigin: 0
+  m_UseSpriteMesh: 0
+  m_PixelsPerUnitMultiplier: 1
+--- !u!222 &1744273218
+CanvasRenderer:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1744273215}
+  m_CullTransparentMesh: 1
 --- !u!1 &1812128405
 GameObject:
   m_ObjectHideFlags: 0
@@ -15252,9 +15427,12 @@ MonoBehaviour:
   titleText: {fileID: 142308604}
   descriptionText: {fileID: 286912979}
   costText: {fileID: 1562898038}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &1866388367
 GameObject:
   m_ObjectHideFlags: 0
@@ -15291,7 +15469,7 @@ RectTransform:
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
   m_AnchorMin: {x: 0.5, y: 0.5}
   m_AnchorMax: {x: 0.5, y: 0.5}
-  m_AnchoredPosition: {x: 42, y: -344}
+  m_AnchoredPosition: {x: 42, y: -474}
   m_SizeDelta: {x: 160, y: 30}
   m_Pivot: {x: 0.5, y: 0.5}
 --- !u!114 &1866388369
@@ -15813,9 +15991,12 @@ MonoBehaviour:
   titleText: {fileID: 1812128407}
   descriptionText: {fileID: 720595546}
   costText: {fileID: 1106110329}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &1933177684
 GameObject:
   m_ObjectHideFlags: 0
@@ -16982,9 +17163,12 @@ MonoBehaviour:
   titleText: {fileID: 1147052071}
   descriptionText: {fileID: 1507551830}
   costText: {fileID: 699153197}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &2073796147
 GameObject:
   m_ObjectHideFlags: 0
@@ -17546,9 +17730,12 @@ MonoBehaviour:
   titleText: {fileID: 1511621299}
   descriptionText: {fileID: 152498606}
   costText: {fileID: 1465847336}
+  iconImage: {fileID: 0}
   lockedOverlay: {fileID: 0}
   purchasedOverlay: {fileID: 0}
   hoverPanel: {fileID: 0}
+  purchasableHighlightColor: {r: 0.45, g: 0.95, b: 0.45, a: 1}
+  lockedTintColor: {r: 0.75, g: 0.75, b: 0.75, a: 1}
 --- !u!1 &2107115161
 GameObject:
   m_ObjectHideFlags: 0
