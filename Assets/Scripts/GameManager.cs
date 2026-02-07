@@ -170,6 +170,8 @@ namespace DuckingAround
         public void EndSession()
         {
             sessionActive = false;
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.PlaySessionEndSfx();
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.ShowSummary(true);
@@ -505,6 +507,8 @@ namespace DuckingAround
             u.applyEffect?.Invoke();
             u.purchased = true;
 
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.PlayUpgradePurchaseSfx();
             if (UIManager.Instance != null)
             {
                 UIManager.Instance.UpdateHUD();

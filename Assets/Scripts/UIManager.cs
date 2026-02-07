@@ -156,6 +156,8 @@ namespace DuckingAround
         public void OnNextSessionClicked()
         {
             if (GameManager.Instance == null) return;
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.PlayRestartSfx();
             GameManager.Instance.StartNewSession();
         }
 
@@ -163,6 +165,8 @@ namespace DuckingAround
         public void OnRestartSessionClicked()
         {
             if (GameManager.Instance == null) return;
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.PlayRestartSfx();
             GameManager.Instance.StartNewSession();
         }
 
@@ -170,6 +174,8 @@ namespace DuckingAround
         public void OnSummaryRestartClicked()
         {
             ShowSummary(false);
+            if (MusicManager.Instance != null)
+                MusicManager.Instance.PlayRestartSfx();
             if (GameManager.Instance != null)
                 GameManager.Instance.StartNewSession();
         }

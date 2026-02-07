@@ -69,7 +69,11 @@ namespace DuckingAround
             if (damageTimer <= 0f)
             {
                 damageTimer = damageTickInterval;
-                ApplyDamage();
+                if (ApplyDamage())
+                {
+                    if (MusicManager.Instance != null)
+                        MusicManager.Instance.PlayBreakerHitSfx();
+                }
                 TriggerBounce();
             }
 
@@ -96,9 +100,10 @@ namespace DuckingAround
             }
         }
 
-        void ApplyDamage()
+        /// <returns>True if at least one duck was hit this pulse.</returns>
+        bool ApplyDamage()
         {
-            if (GameManager.Instance == null) return;
+            if (GameManager.Instance == null) return false;
 
             // Slightly pad the logical radius so the visual breaker ring feels
             // generous when overlapping ducks.
@@ -107,6 +112,7 @@ namespace DuckingAround
             // Copy the list so it is safe if ducks are added/removed
             // (e.g. via OnDuckKilled/SpawnDuck) while we are iterating.
             var ducksSnapshot = GameManager.Instance.Ducks.ToArray();
+            bool hitAny = false;
 
             foreach (var duck in ducksSnapshot)
             {
@@ -118,10 +124,13 @@ namespace DuckingAround
                 float dist = Vector3.Distance(breakerPos, duckPos);
                 if (dist <= radius)
                 {
+                    hitAny = true;
                     int damage = GameManager.Instance.GetBreakerDamage();
                     duck.TakeDamage(damage);
                 }
             }
+
+            return hitAny;
         }
 
         void TriggerBounce()
