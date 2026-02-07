@@ -204,23 +204,34 @@ namespace DuckingAround
                         break;
                     }
 
-                    var btn = go.GetComponent<Button>();
+                    var btn = go.GetComponentInChildren<Button>(true);
                     var img = go.GetComponent<Image>();
                     if (img == null) img = go.GetComponentInChildren<Image>();
+                    // Prefer the TMP_Text on the child named "Title" (e.g. Button/Title in the prefab)
                     TMP_Text label = null;
                     foreach (var t in go.GetComponentsInChildren<TMP_Text>(true))
                     {
-                        var name = t.gameObject.name.ToLowerInvariant();
-                        if (name.Contains("title") || name.Contains("label"))
-                        { label = t; break; }
-                        if (label == null) label = t;
+                        if (string.Equals(t.gameObject.name, "Title", StringComparison.OrdinalIgnoreCase))
+                        {
+                            label = t;
+                            break;
+                        }
                     }
+                    if (label == null)
+                        label = go.GetComponentInChildren<TMP_Text>(true);
                     if (label != null)
                         label.text = string.IsNullOrEmpty(def.name) ? def.id : def.name;
 
                     var tag = go.GetComponent<UpgradeGraphNodeTag>();
                     if (tag == null) tag = go.AddComponent<UpgradeGraphNodeTag>();
                     tag.upgradeId = id;
+
+                    var upgradeButton = go.GetComponent<UpgradeButton>();
+                    if (upgradeButton != null)
+                    {
+                        upgradeButton.upgradeCode = id;
+                        upgradeButton.Refresh();
+                    }
 
                     string captureId = id;
                     if (btn != null)
@@ -283,12 +294,18 @@ namespace DuckingAround
 
             foreach (var kv in _nodes)
             {
-                var state = _stateProvider.GetState(kv.Key);
                 var entry = kv.Value;
-                if (entry.image != null)
-                    entry.image.color = StateToColor(state);
-                if (entry.button != null)
-                    entry.button.interactable = (state == UpgradeNodeState.Available);
+                var ub = entry.rect != null ? entry.rect.GetComponent<UpgradeButton>() : null;
+                if (ub != null)
+                    ub.Refresh();
+                else
+                {
+                    var state = _stateProvider.GetState(kv.Key);
+                    if (entry.image != null)
+                        entry.image.color = StateToColor(state);
+                    if (entry.button != null)
+                        entry.button.interactable = (state == UpgradeNodeState.Available);
+                }
             }
 
             foreach (var go in _edgeLines)
