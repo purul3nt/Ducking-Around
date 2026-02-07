@@ -23,6 +23,8 @@ namespace DuckingAround
 
         bool hasFiredLazer;
 
+        public override int GetGoldReward() => 3;
+
         protected override Renderer GetFlashRenderer()
         {
             for (int i = 0; i < transform.childCount; i++)

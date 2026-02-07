@@ -20,6 +20,8 @@ namespace DuckingAround
 
         bool hasChained;
 
+        public override int GetGoldReward() => 2;
+
         /// <summary>
         /// Electro Duck mesh is on a child; use that for hit flash.
         /// </summary>

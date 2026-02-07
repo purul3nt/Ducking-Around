@@ -204,6 +204,14 @@ namespace DuckingAround
         }
 
         /// <summary>
+        /// Base gold reward when this duck is killed. Override in subclasses (e.g. FireDuck = 2, LazerDuck = 3).
+        /// </summary>
+        public virtual int GetGoldReward()
+        {
+            return 1;
+        }
+
+        /// <summary>
         /// Override in subclasses (e.g. FireDuck) if the renderer is on a child instead of this object.
         /// </summary>
         protected virtual Renderer GetFlashRenderer()

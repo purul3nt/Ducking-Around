@@ -18,6 +18,8 @@ namespace DuckingAround
         [Tooltip("Optional particle system prefab to play when this duck explodes.")]
         public ParticleSystem explosionFxPrefab;
 
+        public override int GetGoldReward() => 2;
+
         /// <summary>
         /// FireDuck's mesh/renderer is on a child; use that for hit flash and death color restore.
         /// </summary>

@@ -32,6 +32,8 @@ namespace DuckingAround
 
         [Header("Economy")]
         [HideInInspector] public int gold = 0;
+        [HideInInspector] public int sessionDucksKilled;
+        [HideInInspector] public int sessionGoldGained;
 
         [Header("Duck settings")]
         public Duck duckPrefab;
@@ -149,6 +151,8 @@ namespace DuckingAround
 
             timeLeft = sessionDuration;
             sessionActive = true;
+            sessionDucksKilled = 0;
+            sessionGoldGained = 0;
 
             for (int i = 0; i < initialDuckCount; i++)
             {
@@ -157,6 +161,7 @@ namespace DuckingAround
 
             if (UIManager.Instance != null)
             {
+                UIManager.Instance.ShowSummary(false);
                 UIManager.Instance.ShowUpgrades(false);
                 UIManager.Instance.UpdateHUD();
             }
@@ -167,7 +172,7 @@ namespace DuckingAround
             sessionActive = false;
             if (UIManager.Instance != null)
             {
-                UIManager.Instance.ShowUpgrades(true);
+                UIManager.Instance.ShowSummary(true);
             }
         }
 
@@ -244,8 +249,11 @@ namespace DuckingAround
             if (duck != null)
                 Ducks.Remove(duck);
 
-            int reward = Mathf.Max(1, Mathf.RoundToInt(1f * duckGoldMultiplier));
+            int baseReward = duck != null ? duck.GetGoldReward() : 1;
+            int reward = Mathf.Max(1, Mathf.RoundToInt(baseReward * duckGoldMultiplier));
             gold += reward;
+            sessionDucksKilled++;
+            sessionGoldGained += reward;
 
             if (UIManager.Instance != null)
             {
