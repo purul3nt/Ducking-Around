@@ -34,6 +34,11 @@ namespace DuckingAround
             return null;
         }
 
+        protected override Color GetHitFlashColor()
+        {
+            return Color.red;
+        }
+
         protected override void Die()
         {
             if (!hasChained)
