@@ -24,10 +24,10 @@ namespace DuckingAround
         [Tooltip("How quickly the duck turns when steering back toward the center.")]
         public float turnSpeed = 2f;
         [Header("Crocodile avoidance")]
-        [Tooltip("Center of the crocodile on the XZ plane (ducks will swim around this).")]
+        [Tooltip("Center of the crocodile on the XZ plane. If GameManager exists, this is overridden at runtime.")]
         public Vector2 crocodileCenterXZ = new Vector2(0.2f, 0f);
-        [Tooltip("Ducks steer away when within this distance of the crocodile center.")]
-        public float crocodileAvoidRadius = 1.2f;
+        [Tooltip("Ducks steer away when within this distance. Kept outside this radius; use GameManager value if set.")]
+        public float crocodileAvoidRadius = 1.5f;
 
         [Header("Death animation")]
         [Tooltip("Seconds for the duck to slide into the crocodile after death.")]
@@ -89,18 +89,63 @@ namespace DuckingAround
             }
             else
             {
-                // Swim forward in the direction the duck is facing (XZ plane),
-                // plus gentle bobbing up and down on the water surface.
                 Vector3 pos = transform.position;
+                Vector2 crocCenter = crocodileCenterXZ;
+                float avoidRadius = crocodileAvoidRadius;
+                if (GameManager.Instance != null)
+                {
+                    crocCenter = GameManager.Instance.crocodileCenterXZ;
+                    avoidRadius = Mathf.Max(avoidRadius, GameManager.Instance.crocodileSpawnAvoidRadius);
+                }
 
-                // Horizontal forward direction (ignore any tilt).
-                Vector3 forwardXZ = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
-                pos += forwardXZ * swimSpeed * Time.deltaTime;
+                Vector3 crocPosXZ = new Vector3(crocCenter.x, 0f, crocCenter.y);
+                Vector3 posXZ = new Vector3(pos.x, 0f, pos.z);
+                Vector3 toCroc = crocPosXZ - posXZ;
+                float distToCroc = toCroc.magnitude;
+                Vector3 awayFromCroc = distToCroc > 0.001f ? -toCroc.normalized : new Vector3(1f, 0f, 0f);
 
-                // If we get too close to the tub edge, steer back toward the center.
+                // Horizontal forward direction (XZ only).
+                Vector3 forwardXZ = new Vector3(transform.forward.x, 0f, transform.forward.z);
+                if (forwardXZ.sqrMagnitude < 0.0001f) forwardXZ = Vector3.forward;
+                forwardXZ.Normalize();
+
+                // 1) Crocodile avoidance: steer away when near or heading toward the croc (so we never swim into it).
+                if (distToCroc < avoidRadius * 1.2f)
+                {
+                    float dot = Vector3.Dot(forwardXZ, awayFromCroc);
+                    if (dot < 0.7f || distToCroc < avoidRadius)
+                    {
+                        Quaternion targetRot = Quaternion.LookRotation(awayFromCroc, Vector3.up);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * 1.5f * Time.deltaTime);
+                        forwardXZ = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+                    }
+                }
+                else if (distToCroc < avoidRadius * 1.8f)
+                {
+                    float dot = Vector3.Dot(forwardXZ, -awayFromCroc);
+                    if (dot > 0.3f)
+                    {
+                        Quaternion targetRot = Quaternion.LookRotation(awayFromCroc, Vector3.up);
+                        transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
+                        forwardXZ = new Vector3(transform.forward.x, 0f, transform.forward.z).normalized;
+                    }
+                }
+
+                // 2) Move forward (but not into the crocodile zone).
+                Vector3 move = forwardXZ * (swimSpeed * Time.deltaTime);
+                Vector3 newPosXZ = posXZ + move;
+                float newDistToCroc = (crocPosXZ - newPosXZ).magnitude;
+                if (newDistToCroc < avoidRadius && distToCroc > 0.001f)
+                {
+                    newPosXZ = crocPosXZ + awayFromCroc * avoidRadius;
+                    move = newPosXZ - posXZ;
+                }
+                pos.x = newPosXZ.x;
+                pos.z = newPosXZ.z;
+
+                // 3) Tub edge: steer back toward center if we've left the swim radius.
                 Vector3 center = new Vector3(0f, pos.y, 0f);
-                Vector3 toCenter = center - pos;
-                Vector3 toCenterXZ = new Vector3(toCenter.x, 0f, toCenter.z);
+                Vector3 toCenterXZ = new Vector3(-pos.x, 0f, -pos.z);
                 float distFromCenter = toCenterXZ.magnitude;
                 if (distFromCenter > swimRadius && toCenterXZ.sqrMagnitude > 0.0001f)
                 {
@@ -108,23 +153,20 @@ namespace DuckingAround
                     transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
                 }
 
-                // If we get too close to the crocodile, steer away so ducks swim around it.
-                Vector3 crocPosXZ = new Vector3(crocodileCenterXZ.x, 0f, crocodileCenterXZ.y);
-                Vector3 toCroc = crocPosXZ - new Vector3(pos.x, 0f, pos.z);
-                float distToCroc = toCroc.magnitude;
-                if (distToCroc < crocodileAvoidRadius && distToCroc > 0.001f)
+                // 4) Safety: never allow position inside crocodile radius (push out).
+                posXZ = new Vector3(pos.x, 0f, pos.z);
+                distToCroc = (crocPosXZ - posXZ).magnitude;
+                if (distToCroc < avoidRadius && distToCroc > 0.001f)
                 {
-                    Vector3 awayFromCroc = -toCroc.normalized;
-                    Quaternion targetRot = Quaternion.LookRotation(awayFromCroc, Vector3.up);
-                    transform.rotation = Quaternion.Slerp(transform.rotation, targetRot, turnSpeed * Time.deltaTime);
+                    pos.x = crocPosXZ.x + awayFromCroc.x * avoidRadius;
+                    pos.z = crocPosXZ.z + awayFromCroc.z * avoidRadius;
                 }
 
-                // Gentle float motion on water surface (vertical bobbing).
+                // Vertical bobbing.
                 float y = startPos.y + Mathf.Sin(Time.time * bobSpeed + startPos.x) * bobAmplitude;
                 pos.y = y;
 
                 transform.position = pos;
-
                 UpdateHitFlash();
             }
         }
