@@ -2136,6 +2136,8 @@ MonoBehaviour:
   lazerDuckChance: 0
   initialDuckCount: 32
   tubRadius: 5
+  poolVisual: {fileID: 611200803}
+  totalDucksKilled: 0
   crocodileCenterXZ: {x: 0.2, y: 0}
   crocodileSpawnAvoidRadius: 1.2
   minSpawnDistanceFromDeath: 1.5
@@ -3083,6 +3085,7 @@ GameObject:
   - component: {fileID: 330585545}
   - component: {fileID: 330585544}
   - component: {fileID: 330585547}
+  - component: {fileID: 330585548}
   m_Layer: 0
   m_Name: Main Camera
   m_TagString: MainCamera
@@ -3208,6 +3211,20 @@ MonoBehaviour:
     m_MipBias: 0
     m_VarianceClampScale: 0.9
     m_ContrastAdaptiveSharpening: 0
+--- !u!114 &330585548
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 330585543}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 084598ff5337d724c975b6a1f806ed6a, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  defaultIntensity: 0.08
+  defaultDuration: 0.2
 --- !u!1 &353110318
 GameObject:
   m_ObjectHideFlags: 0
@@ -5084,6 +5101,9 @@ MonoBehaviour:
   upgradesPanel: {fileID: 1350655510}
   upgradePanelBackground: {fileID: 1744273215}
   summaryPanel: {fileID: 397094648}
+  summaryBounceTarget: {fileID: 928240710}
+  summaryBounceDuration: 0.4
+  summaryBounceOvershoot: 1.15
   summaryDucksKilledText: {fileID: 1926080111}
   summaryGoldGainedText: {fileID: 980739957}
   upgradeButtons:
@@ -5459,6 +5479,11 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 603135713}
   m_CullTransparentMesh: 1
+--- !u!4 &611200803 stripped
+Transform:
+  m_CorrespondingSourceObject: {fileID: 8101327543350380104, guid: e40085e8b4f7fe5458d9c697c650d378, type: 3}
+  m_PrefabInstance: {fileID: 1563352025}
+  m_PrefabAsset: {fileID: 0}
 --- !u!1 &625813481
 GameObject:
   m_ObjectHideFlags: 0
@@ -5763,7 +5788,7 @@ MonoBehaviour:
   damageNumberColor: {r: 0.11320752, g: 0.10412956, b: 0.10412956, a: 1}
   spawnHeightOffset: 0.2
   worldScale: 0.05
-  fontSize: 3
+  fontSize: 4
   riseSpeed: 1.5
   arcGravity: 5
 --- !u!4 &676791533
@@ -11835,6 +11860,75 @@ CanvasRenderer:
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 1367135710}
   m_CullTransparentMesh: 1
+--- !u!1001 &1374229026
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 1690562511009458, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_Name
+      value: FX_Bubbles_Float_01
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalScale.x
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalScale.z
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0.397
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: -0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4661593248573732, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 199223508220104442, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
+      propertyPath: m_Materials.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: cd8a919d250921a47b55356e13bc37f4, type: 3}
 --- !u!1 &1389343013
 GameObject:
   m_ObjectHideFlags: 0
@@ -19248,6 +19342,7 @@ SceneRoots:
   - {fileID: 832575519}
   - {fileID: 944531094}
   - {fileID: 1563352025}
+  - {fileID: 1374229026}
   - {fileID: 594907141}
   - {fileID: 2021082048}
   - {fileID: 588616937}

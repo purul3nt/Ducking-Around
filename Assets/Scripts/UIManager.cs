@@ -38,6 +38,12 @@ namespace DuckingAround
         public GameObject upgradePanelBackground;
         [Tooltip("Session end summary: ducks killed, gold gained, Restart and Upgrades buttons.")]
         public GameObject summaryPanel;
+        [Tooltip("Optional: assign the summary background RectTransform to bounce this in. If unset, the whole summary panel is bounced.")]
+        public RectTransform summaryBounceTarget;
+        [Tooltip("Duration of the summary bounce-in animation in seconds.")]
+        public float summaryBounceDuration = 0.4f;
+        [Tooltip("Peak scale (overshoot) during the bounce-in (e.g. 1.15 = 15% overshoot).")]
+        public float summaryBounceOvershoot = 1.15f;
         [Tooltip("Text showing ducks killed this session (e.g. 'Ducks eliminated: 12').")]
         public TMP_Text summaryDucksKilledText;
         [Tooltip("Text showing gold gained this session (e.g. 'Gold earned: 45').")]
@@ -145,15 +151,52 @@ namespace DuckingAround
             if (summaryPanel != null)
             {
                 summaryPanel.SetActive(show);
-                if (show && GameManager.Instance != null)
+                if (show)
                 {
-                    var gm = GameManager.Instance;
-                    if (summaryDucksKilledText != null)
-                        summaryDucksKilledText.text = "Ducks eliminated: " + gm.sessionDucksKilled;
-                    if (summaryGoldGainedText != null)
-                        summaryGoldGainedText.text = "Gold earned: " + gm.sessionGoldGained;
+                    if (GameManager.Instance != null)
+                    {
+                        var gm = GameManager.Instance;
+                        if (summaryDucksKilledText != null)
+                            summaryDucksKilledText.text = "Ducks eliminated: " + gm.sessionDucksKilled;
+                        if (summaryGoldGainedText != null)
+                            summaryGoldGainedText.text = "Gold earned: " + gm.sessionGoldGained;
+                    }
+                    RectTransform target = summaryBounceTarget != null ? summaryBounceTarget : summaryPanel.GetComponent<RectTransform>();
+                    if (target != null)
+                        StartCoroutine(SummaryBounceInRoutine(target));
                 }
             }
+        }
+
+        IEnumerator SummaryBounceInRoutine(RectTransform target)
+        {
+            float duration = summaryBounceDuration;
+            float overshoot = summaryBounceOvershoot;
+            float elapsed = 0f;
+            float rise = duration * 0.4f;
+            float settle = duration - rise;
+
+            target.localScale = Vector3.zero;
+
+            while (elapsed < rise)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01(elapsed / rise);
+                float s = Mathf.Lerp(0f, overshoot, t);
+                target.localScale = new Vector3(s, s, s);
+                yield return null;
+            }
+            elapsed = rise;
+            while (elapsed < duration)
+            {
+                elapsed += Time.deltaTime;
+                float t = Mathf.Clamp01((elapsed - rise) / settle);
+                float s = Mathf.Lerp(overshoot, 1f, t);
+                target.localScale = new Vector3(s, s, s);
+                yield return null;
+            }
+
+            target.localScale = Vector3.one;
         }
 
         // --- Button hooks ---------------------------------------------------

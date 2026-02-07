@@ -35,6 +35,7 @@ namespace DuckingAround
         [HideInInspector] public int sessionDucksKilled;
         [HideInInspector] public int sessionGoldGained;
 
+
         [Header("Duck settings")]
         public Duck duckPrefab;
         [Tooltip("Optional prefab for Fire Duck (explodes on death).")]
@@ -51,8 +52,17 @@ namespace DuckingAround
         public float lazerDuckChance = 0.1f;
         [Tooltip("Initial number of ducks to spawn at the start of a session.")]
         public int initialDuckCount = 4;
-        [Tooltip("Radius of the hot tub in world units, used for random spawn positions.")]
+        [Tooltip("Radius of the hot tub in world units, used for random spawn positions. Grows 5% at exponential milestones (100, 200, 400, 800... ducks killed).")]
         public float tubRadius = 5f;
+
+        [Header("Zoom & pool growth (exponential milestones)")]
+        [Tooltip("Optional pool/hot-tub transform to scale on X/Z when pool grows (assign the pool asset so it matches the spawn area).")]
+        public Transform poolVisual;
+        [Tooltip("Lifetime ducks killed across all sessions. Zoom + pool at 100, 200, 400, 800, 1600...")]
+        [HideInInspector] public int totalDucksKilled;
+        int _nextZoomMilestone = 100;
+        Vector3 _initialPoolScale;
+        float _poolScaleFactor = 1f;
         [Tooltip("Center of the crocodile on the XZ plane; ducks will not spawn inside its radius.")]
         public Vector2 crocodileCenterXZ = new Vector2(0.2f, 0f);
         [Tooltip("Radius around the crocodile where ducks are not allowed to spawn.")]
@@ -116,6 +126,8 @@ namespace DuckingAround
 
         private void Start()
         {
+            if (poolVisual != null)
+                _initialPoolScale = poolVisual.localScale;
             StartNewSession();
         }
 
@@ -259,6 +271,13 @@ namespace DuckingAround
             gold += reward;
             sessionDucksKilled++;
             sessionGoldGained += reward;
+            totalDucksKilled++;
+
+            while (totalDucksKilled >= _nextZoomMilestone)
+            {
+                ApplyZoomAndPoolBonus();
+                _nextZoomMilestone *= 2;
+            }
 
             if (UIManager.Instance != null)
             {
@@ -272,6 +291,31 @@ namespace DuckingAround
             }
 
             DuckSuckedIn?.Invoke();
+        }
+
+        void ApplyZoomAndPoolBonus()
+        {
+            const float growthPercent = 1.05f;
+            tubRadius *= growthPercent;
+            _poolScaleFactor *= growthPercent;
+            if (poolVisual != null)
+            {
+                if (_initialPoolScale == Vector3.zero)
+                    _initialPoolScale = poolVisual.localScale;
+                poolVisual.localScale = new Vector3(
+                    _initialPoolScale.x * _poolScaleFactor,
+                    _initialPoolScale.y,
+                    _initialPoolScale.z * _poolScaleFactor
+                );
+            }
+            var cam = Camera.main;
+            if (cam != null)
+            {
+                if (cam.orthographic)
+                    cam.orthographicSize *= growthPercent;
+                else
+                    cam.fieldOfView = Mathf.Min(179f, cam.fieldOfView * growthPercent);
+            }
         }
 
         // --- Breaker damage / crits ----------------------------------------
@@ -396,6 +440,7 @@ namespace DuckingAround
                 // Breaker Speed +25%
                 breakerSpeedMultiplier *= 1.25f;
             });
+            
 
             AddUpgrade("U17", 600, "U16", () =>
             {
