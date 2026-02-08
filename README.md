@@ -64,7 +64,7 @@ A casual arcade game made for **Supercell's Global AI Game Hack**. Guide your cu
 
 ## 📜 License
 
-This project was created for **Supercell's Global AI Game Hack**. Use and distribution are subject to the hackathon rules and your chosen license.
+This project was created for **Supercell's Global AI Game Hack**. Use and distribution are subject to the hackathon rules and license.
 
 ---
 
