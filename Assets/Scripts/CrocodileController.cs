@@ -17,13 +17,15 @@ namespace DuckingAround
         public float turnSpeed = 5f;
 
         [Header("Suck-in pulse")]
-        [Tooltip("Scale at peak of the pulse when a duck is sucked in.")]
+        [Tooltip("Scale at peak of the pulse when a duck is sucked in (capped at 2x original size).")]
         public float pulseScale = 1.06f;
         [Tooltip("Duration of the suck-in pulse in seconds.")]
         public float pulseDuration = 0.2f;
+        const float MaxScaleMultiplier = 2f;
 
         Transform breakerTransform;
         Coroutine _pulseRoutine;
+        Vector3 _crocRestScale;
 
         void OnEnable()
         {
@@ -37,6 +39,7 @@ namespace DuckingAround
 
         void Start()
         {
+            _crocRestScale = transform.localScale;
             if (breaker != null)
                 breakerTransform = breaker;
             else
@@ -56,7 +59,7 @@ namespace DuckingAround
 
         IEnumerator PulseRoutine()
         {
-            Vector3 baseScale = transform.localScale;
+            float peakScale = Mathf.Min(pulseScale, MaxScaleMultiplier);
             float half = pulseDuration * 0.5f;
             float elapsed = 0f;
 
@@ -64,8 +67,9 @@ namespace DuckingAround
             {
                 elapsed += Time.deltaTime;
                 float tNorm = elapsed / half;
-                float s = Mathf.Lerp(1f, pulseScale, tNorm);
-                transform.localScale = new Vector3(baseScale.x * s, baseScale.y * s, baseScale.z * s);
+                float s = Mathf.Lerp(1f, peakScale, tNorm);
+                s = Mathf.Min(s, MaxScaleMultiplier);
+                transform.localScale = new Vector3(_crocRestScale.x * s, _crocRestScale.y * s, _crocRestScale.z * s);
                 yield return null;
             }
             elapsed = half;
@@ -73,12 +77,13 @@ namespace DuckingAround
             {
                 elapsed += Time.deltaTime;
                 float tNorm = (elapsed - half) / half;
-                float s = Mathf.Lerp(pulseScale, 1f, tNorm);
-                transform.localScale = new Vector3(baseScale.x * s, baseScale.y * s, baseScale.z * s);
+                float s = Mathf.Lerp(peakScale, 1f, tNorm);
+                s = Mathf.Min(s, MaxScaleMultiplier);
+                transform.localScale = new Vector3(_crocRestScale.x * s, _crocRestScale.y * s, _crocRestScale.z * s);
                 yield return null;
             }
 
-            transform.localScale = baseScale;
+            transform.localScale = _crocRestScale;
             _pulseRoutine = null;
         }
 
